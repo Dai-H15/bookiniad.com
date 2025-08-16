@@ -1,0 +1,289 @@
+{% extends 'main/base.html' %}
+{% load custom_filters %}
+
+{% block title %}予約完了 - {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- 成功メッセージ -->
+            <div class="text-center mb-4">
+                <div class="text-success mb-3">
+                    <i class="fas fa-check-circle fa-4x"></i>
+                </div>
+                <h2 class="text-success">予約が完了しました！</h2>
+                <p class="text-muted">予約確認メールをお送りしました。</p>
+            </div>
+
+            <!-- 予約詳細 -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-receipt"></i> 予約詳細
+                        <span class="float-end">#{{ booking.id }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- お客様情報 -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-primary"><i class="fas fa-user"></i> お客様情報</h6>
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <td width="100">お名前</td>
+                                    <td>{{ booking.customer_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>メール</td>
+                                    <td>{{ booking.customer_email }}</td>
+                                </tr>
+                                <tr>
+                                    <td>電話番号</td>
+                                    <td>{{ booking.customer_phone }}</td>
+                                </tr>
+                                <tr>
+                                    <td>宿泊人数</td>
+                                    <td>{{ booking.guests }}名</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary"><i class="fas fa-calendar"></i> 宿泊日程</h6>
+                            <table class="table table-borderless table-sm">
+                                <tr>
+                                    <td width="120">チェックイン</td>
+                                    <td>{{ booking.check_in_date|date:"Y年n月j日" }}</td>
+                                </tr>
+                                <tr>
+                                    <td>チェックアウト</td>
+                                    <td>{{ booking.check_out_date|date:"Y年n月j日" }}</td>
+                                </tr>
+                                <tr>
+                                    <td>宿泊日数</td>
+                                    <td>{{ booking.nights }}泊</td>
+                                </tr>
+                                <tr>
+                                    <td>予約日時</td>
+                                    <td>{{ booking.created_at|date:"Y年n月j日 H:i" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 宿泊施設情報 -->
+                    {% if booking.accommodation %}
+                    <div class="mb-4">
+                        <h6 class="text-primary"><i class="fas fa-bed"></i> 宿泊施設</h6>
+                        <div class="alert alert-light">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="mb-1">{{ booking.accommodation.name }}</h6>
+                                    <p class="mb-1 text-muted">
+                                        <i class="fas fa-map-marker-alt"></i> {{ booking.accommodation.location }}
+                                    </p>
+                                    <div class="text-warning mb-2">
+                                        {% for i in "12345"|make_list %}
+                                            {% if forloop.counter <= booking.accommodation.rank %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    {% if booking.accommodation.amenities %}
+                                    <div class="mb-2">
+                                        {% for amenity in booking.accommodation.amenities %}
+                                            <span class="badge bg-light text-dark me-1">{{ amenity }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <div class="h6 text-primary">¥{{ booking.accommodation.price_per_night|floatformat:0 }}/泊</div>
+                                    <div class="text-muted">{{ booking.nights }}泊 × ¥{{ booking.accommodation.price_per_night|floatformat:0 }}</div>
+                                    <div class="fw-bold">¥{{ booking.accommodation_total|floatformat:0 }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- 航空券情報 -->
+                    {% if booking.outbound_flight %}
+                    <div class="mb-4">
+                        <h6 class="text-primary"><i class="fas fa-plane"></i> 航空券</h6>
+                        <div class="alert alert-light">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="mb-1">{{ booking.outbound_flight.name }}</h6>
+                                    <p class="mb-1">
+                                        <i class="fas fa-plane-departure"></i> {{ booking.outbound_flight.place_from }}
+                                        <i class="fas fa-arrow-right mx-2"></i>
+                                        <i class="fas fa-plane-arrival"></i> {{ booking.outbound_flight.place_to }}
+                                    </p>
+                                    <p class="mb-1 text-muted">
+                                        出発: {{ booking.outbound_flight.departure_time|date:"Y年n月j日 H:i" }}
+                                    </p>
+                                    <p class="mb-1 text-muted">
+                                        到着: {{ booking.outbound_flight.arrival_time|date:"Y年n月j日 H:i" }}
+                                    </p>
+                                    <span class="badge bg-{% if booking.outbound_flight.flight_type == 'domestic' %}primary{% else %}success{% endif %}">
+                                        {% if booking.outbound_flight.flight_type == 'domestic' %}国内線{% else %}国際線{% endif %}
+                                    </span>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <div class="h6 text-primary">¥{{ booking.outbound_flight.fee|floatformat:0 }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- 特別なご要望 -->
+                    {% if booking.special_requests %}
+                    <div class="mb-4">
+                        <h6 class="text-primary"><i class="fas fa-comment-alt"></i> 特別なご要望</h6>
+                        <div class="alert alert-light">
+                            {{ booking.special_requests|linebreaks }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- 合計金額 -->
+                    <div class="border-top pt-3">
+                        <div class="row">
+                            <div class="col-md-6 offset-md-6">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        {% if booking.accommodation %}
+                                        <tr>
+                                            <td>宿泊料金</td>
+                                            <td class="text-end">¥{{ booking.accommodation_total|floatformat:0 }}</td>
+                                        </tr>
+                                        {% endif %}
+                                        {% if booking.outbound_flight %}
+                                        <tr>
+                                            <td>航空券代金</td>
+                                            <td class="text-end">¥{{ booking.outbound_flight.fee|floatformat:0 }}</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="table-success">
+                                            <th>合計金額</th>
+                                            <th class="text-end h5">¥{{ booking.total_price|floatformat:0 }}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 次のステップ -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0"><i class="fas fa-info-circle"></i> 今後の流れ</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-envelope-circle-check fa-2x text-success"></i>
+                                </div>
+                                <div>
+                                    <h6>確認メール送信済み</h6>
+                                    <p class="text-muted mb-0">予約詳細を記載した確認メールをお送りしました。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-credit-card fa-2x text-primary"></i>
+                                </div>
+                                <div>
+                                    <h6>お支払いについて</h6>
+                                    <p class="text-muted mb-0">現地でのお支払いとなります。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-phone fa-2x text-info"></i>
+                                </div>
+                                <div>
+                                    <h6>サポート</h6>
+                                    <p class="text-muted mb-0">ご不明な点がございましたらお気軽にお問い合わせください。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-calendar-alt fa-2x text-warning"></i>
+                                </div>
+                                <div>
+                                    <h6>ご旅行日まで</h6>
+                                    <p class="text-muted mb-0">あと{{ days_until_checkin }}日です。お気をつけてお出かけください。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="text-center">
+                <a href="{% url 'index' %}" class="btn btn-primary me-2">
+                    <i class="fas fa-home"></i> ホームに戻る
+                </a>
+                <button class="btn btn-outline-secondary me-2" onclick="window.print()">
+                    <i class="fas fa-print"></i> 印刷
+                </button>
+                <a href="{% url 'accommodation_search' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-search"></i> 別の予約を検索
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// セッションストレージをクリア（予約完了後）
+sessionStorage.removeItem('selectedAccommodation');
+sessionStorage.removeItem('selectedFlight');
+
+// 印刷スタイルの調整
+window.addEventListener('beforeprint', function() {
+    document.body.classList.add('printing');
+});
+
+window.addEventListener('afterprint', function() {
+    document.body.classList.remove('printing');
+});
+</script>
+
+<style>
+@media print {
+    .btn, nav, footer {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+    }
+    
+    .alert {
+        border: 1px solid #ddd !important;
+    }
+}
+</style>
+{% endblock %}

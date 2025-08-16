@@ -1,0 +1,185 @@
+{% extends 'main/base.html' %}
+
+{% block title %}AI システム比較 - bookiniad.com{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h1>AI システム比較</h1>
+        <p class="lead">3つの異なるAIアプローチを体験して、それぞれの特徴を理解しましょう</p>
+    </div>
+
+    <!-- 比較表 -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h3><i class="fas fa-table"></i> 機能比較表</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>機能</th>
+                            <th class="text-center">AIエージェント</th>
+                            <th class="text-center">AIアシスタント</th>
+                            <th class="text-center">ルールベースBot</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>自然言語理解</strong></td>
+                            <td class="text-center"><i class="fas fa-check-circle text-success fa-lg"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-warning fa-lg"></i></td>
+                            <td class="text-center"><i class="fas fa-times text-danger fa-lg"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>文脈把握</strong></td>
+                            <td class="text-center"><i class="fas fa-check-circle text-success fa-lg"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-warning fa-lg"></i></td>
+                            <td class="text-center"><i class="fas fa-times text-danger fa-lg"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>応答速度</strong></td>
+                            <td class="text-center"><span class="badge bg-warning">普通</span></td>
+                            <td class="text-center"><span class="badge bg-info">速い</span></td>
+                            <td class="text-center"><span class="badge bg-success">とても速い</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>精度</strong></td>
+                            <td class="text-center"><span class="badge bg-success">とても高い</span></td>
+                            <td class="text-center"><span class="badge bg-info">高い</span></td>
+                            <td class="text-center"><span class="badge bg-warning">限定的</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>学習能力</strong></td>
+                            <td class="text-center"><i class="fas fa-check-circle text-success fa-lg"></i></td>
+                            <td class="text-center"><i class="fas fa-check text-warning fa-lg"></i></td>
+                            <td class="text-center"><i class="fas fa-times text-danger fa-lg"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>コスト</strong></td>
+                            <td class="text-center"><span class="badge bg-danger">高い</span></td>
+                            <td class="text-center"><span class="badge bg-warning">中程度</span></td>
+                            <td class="text-center"><span class="badge bg-success">低い</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- システム詳細 -->
+    <div class="row">
+        {% for system in systems %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header text-center 
+                    {% if system.id == 'ai_agent' %}bg-primary text-white
+                    {% elif system.id == 'ai_assistant' %}bg-info text-white
+                    {% else %}bg-warning{% endif %}">
+                    <h4>{{ system.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ system.description }}</p>
+                    
+                    <h6 class="mt-4">主な特徴:</h6>
+                    <ul class="list-unstyled">
+                        {% for feature in system.features %}
+                        <li class="mb-2">
+                            <i class="fas fa-star text-warning"></i> {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="mt-4">
+                        <h6>技術的詳細:</h6>
+                        {% if system.id == 'ai_agent' %}
+                        <small class="text-muted">
+                            • 大規模言語モデル (LLM) 使用<br>
+                            • GPT-4 / Claude等のAPI連携<br>
+                            • 動的プロンプト生成<br>
+                            • 推論プロセスの可視化
+                        </small>
+                        {% elif system.id == 'ai_assistant' %}
+                        <small class="text-muted">
+                            • タスク特化型モデル<br>
+                            • 事前学習済み分類器<br>
+                            • データベース連携<br>
+                            • 効率的なクエリ処理
+                        </small>
+                        {% else %}
+                        <small class="text-muted">
+                            • if-else条件分岐<br>
+                            • キーワードマッチング<br>
+                            • 正規表現パターン<br>
+                            • 事前定義応答テンプレート
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-grid">
+                        <a href="{% url 'chat_interface' system.id %}" 
+                           class="btn {% if system.id == 'ai_agent' %}btn-primary{% elif system.id == 'ai_assistant' %}btn-info{% else %}btn-warning{% endif %}">
+                            <i class="fas fa-comments"></i> 体験する
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 使用例 -->
+    <div class="card mb-5">
+        <div class="card-header">
+            <h3><i class="fas fa-lightbulb"></i> 実際の使用例</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="text-primary">AIエージェント</h5>
+                    <div class="bg-light p-3 rounded">
+                        <strong>ユーザー:</strong> "家族旅行で、子供が喜ぶような場所で、予算は20万円くらいで考えています"<br><br>
+                        <strong>AI:</strong> "ご家族での旅行ですね！お子様の年齢や興味、時期などを教えていただけますか？テーマパークや自然体験など、お子様が楽しめるプランをご提案いたします。"
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="text-info">AIアシスタント</h5>
+                    <div class="bg-light p-3 rounded">
+                        <strong>ユーザー:</strong> "東京から沖縄、2名、3泊4日"<br><br>
+                        <strong>AI:</strong> "東京-沖縄 2名3泊のプランを検索しました。現在3つのパッケージがあります：
+                        1. リゾートプラン ¥180,000
+                        2. 観光プラン ¥150,000  
+                        3. ビジネスプラン ¥120,000"
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="text-warning">ルールベースBot</h5>
+                    <div class="bg-light p-3 rounded">
+                        <strong>ユーザー:</strong> "検索"<br><br>
+                        <strong>Bot:</strong> "旅行検索ですね。以下の情報を入力してください：
+                        • 出発地
+                        • 目的地  
+                        • 出発日
+                        • 人数"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- パフォーマンス比較リンク -->
+    <div class="text-center">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h4>実際のパフォーマンスを確認</h4>
+                <p>各システムの応答時間、精度、ユーザー満足度などのデータを分析できます</p>
+                <a href="{% url 'performance_analysis' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-chart-line"></i> パフォーマンス分析を見る
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

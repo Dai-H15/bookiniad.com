@@ -1,0 +1,319 @@
+{% extends 'main/base.html' %}
+
+{% block title %}予約確定 - {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-calendar-check text-primary"></i> 予約確定</h2>
+            <p class="text-muted">選択した内容で予約を確定します。</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- 選択内容確認 -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-list-check"></i> 選択内容の確認</h5>
+                </div>
+                <div class="card-body">
+                    <!-- 宿泊施設情報 -->
+                    <div id="accommodation-section" class="mb-4">
+                        <h6 class="text-primary"><i class="fas fa-bed"></i> 宿泊施設</h6>
+                        <div id="accommodation-info" class="alert alert-light">
+                            <p class="text-muted">宿泊施設が選択されていません。</p>
+                            <a href="{% url 'accommodation_search' %}" class="btn btn-outline-primary btn-sm">
+                                宿泊施設を選択
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 航空券情報 -->
+                    <div id="flight-section" class="mb-4">
+                        <h6 class="text-primary"><i class="fas fa-plane"></i> 航空券</h6>
+                        <div id="flight-info" class="alert alert-light">
+                            <p class="text-muted">航空券が選択されていません。</p>
+                            <a href="{% url 'flight_search' %}" class="btn btn-outline-primary btn-sm">
+                                航空券を選択
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 合計金額 -->
+                    <div id="total-section" class="d-none">
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 offset-md-6">
+                                <table class="table table-borderless">
+                                    <tbody id="price-breakdown"></tbody>
+                                    <tfoot>
+                                        <tr class="table-primary">
+                                            <th>合計金額</th>
+                                            <th class="text-end" id="total-price">¥0</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 予約者情報入力 -->
+            <div id="booking-form-section" class="card mb-4 d-none">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-user"></i> 予約者情報</h5>
+                </div>
+                <div class="card-body">
+                    <form id="booking-form" method="POST" action="{% url 'create_booking' %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="accommodation-id" name="accommodation_id">
+                        <input type="hidden" id="flight-id" name="flight_id">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="customer_name" class="form-label">お名前 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="customer_email" class="form-label">メールアドレス <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="customer_email" name="customer_email" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="customer_phone" class="form-label">電話番号 <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="customer_phone" name="customer_phone" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="check_in_date" class="form-label">チェックイン日 <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="check_in_date" name="check_in_date" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="check_out_date" class="form-label">チェックアウト日 <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="check_out_date" name="check_out_date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="guests" class="form-label">宿泊人数 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="guests" name="guests" required>
+                                    <option value="">選択してください</option>
+                                    <option value="1">1名</option>
+                                    <option value="2">2名</option>
+                                    <option value="3">3名</option>
+                                    <option value="4">4名</option>
+                                    <option value="5">5名以上</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="special_requests" class="form-label">特別なご要望</label>
+                            <textarea class="form-control" id="special_requests" name="special_requests" rows="3" 
+                                      placeholder="アレルギーや特別なリクエストがございましたらご記入ください"></textarea>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="terms_agreement" required>
+                            <label class="form-check-label" for="terms_agreement">
+                                <a href="#" class="text-decoration-none">利用規約</a>および<a href="#" class="text-decoration-none">プライバシーポリシー</a>に同意します <span class="text-danger">*</span>
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-outline-secondary me-md-2" onclick="clearSelections()">
+                                <i class="fas fa-times"></i> クリア
+                            </button>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-credit-card"></i> 予約を確定する
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 注意事項 -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0"><i class="fas fa-info-circle"></i> ご注意事項</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li><i class="fas fa-check text-success"></i> 予約確定後、確認メールをお送りします。</li>
+                        <li><i class="fas fa-check text-success"></i> キャンセルポリシーについては、各施設・航空会社の規定に従います。</li>
+                        <li><i class="fas fa-check text-success"></i> 価格は税込み表示です。</li>
+                        <li><i class="fas fa-check text-success"></i> お支払いは現地決済となります。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedAccommodation = null;
+let selectedFlight = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadSelections();
+    
+    // 日付の制限設定
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    document.getElementById('check_in_date').min = today.toISOString().split('T')[0];
+    document.getElementById('check_out_date').min = tomorrow.toISOString().split('T')[0];
+    
+    // チェックイン日変更時にチェックアウト日の最小値を更新
+    document.getElementById('check_in_date').addEventListener('change', function() {
+        const checkinDate = new Date(this.value);
+        const nextDay = new Date(checkinDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        document.getElementById('check_out_date').min = nextDay.toISOString().split('T')[0];
+    });
+});
+
+function loadSelections() {
+    // セッションストレージから選択内容を取得
+    const accommodationData = sessionStorage.getItem('selectedAccommodation');
+    const flightData = sessionStorage.getItem('selectedFlight');
+    
+    if (accommodationData) {
+        selectedAccommodation = JSON.parse(accommodationData);
+        displayAccommodation();
+    }
+    
+    if (flightData) {
+        selectedFlight = JSON.parse(flightData);
+        displayFlight();
+    }
+    
+    updateTotal();
+    toggleBookingForm();
+}
+
+function displayAccommodation() {
+    if (!selectedAccommodation) return;
+    
+    document.getElementById('accommodation-info').innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h6 class="mb-1">${selectedAccommodation.name}</h6>
+                <p class="mb-1 text-muted">¥${selectedAccommodation.price.toLocaleString()}/泊</p>
+            </div>
+            <button class="btn btn-outline-danger btn-sm" onclick="removeAccommodation()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    document.getElementById('accommodation-info').className = 'alert alert-success';
+    document.getElementById('accommodation-id').value = selectedAccommodation.id;
+}
+
+function displayFlight() {
+    if (!selectedFlight) return;
+    
+    document.getElementById('flight-info').innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h6 class="mb-1">${selectedFlight.airline}</h6>
+                <p class="mb-1 text-muted">${selectedFlight.departure} → ${selectedFlight.destination}</p>
+                <p class="mb-1 text-muted">出発: ${selectedFlight.departureTime}</p>
+                <p class="mb-1 text-muted">¥${selectedFlight.price.toLocaleString()}</p>
+            </div>
+            <button class="btn btn-outline-danger btn-sm" onclick="removeFlight()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    document.getElementById('flight-info').className = 'alert alert-success';
+    document.getElementById('flight-id').value = selectedFlight.id;
+}
+
+function updateTotal() {
+    let total = 0;
+    let breakdown = '';
+    
+    if (selectedAccommodation) {
+        total += selectedAccommodation.price;
+        breakdown += `<tr><td>宿泊施設</td><td class="text-end">¥${selectedAccommodation.price.toLocaleString()}</td></tr>`;
+    }
+    
+    if (selectedFlight) {
+        total += selectedFlight.price;
+        breakdown += `<tr><td>航空券</td><td class="text-end">¥${selectedFlight.price.toLocaleString()}</td></tr>`;
+    }
+    
+    if (total > 0) {
+        document.getElementById('price-breakdown').innerHTML = breakdown;
+        document.getElementById('total-price').textContent = `¥${total.toLocaleString()}`;
+        document.getElementById('total-section').classList.remove('d-none');
+    } else {
+        document.getElementById('total-section').classList.add('d-none');
+    }
+}
+
+function toggleBookingForm() {
+    const hasSelection = selectedAccommodation || selectedFlight;
+    if (hasSelection) {
+        document.getElementById('booking-form-section').classList.remove('d-none');
+    } else {
+        document.getElementById('booking-form-section').classList.add('d-none');
+    }
+}
+
+function removeAccommodation() {
+    selectedAccommodation = null;
+    sessionStorage.removeItem('selectedAccommodation');
+    document.getElementById('accommodation-info').innerHTML = `
+        <p class="text-muted">宿泊施設が選択されていません。</p>
+        <a href="{% url 'accommodation_search' %}" class="btn btn-outline-primary btn-sm">
+            宿泊施設を選択
+        </a>
+    `;
+    document.getElementById('accommodation-info').className = 'alert alert-light';
+    document.getElementById('accommodation-id').value = '';
+    updateTotal();
+    toggleBookingForm();
+}
+
+function removeFlight() {
+    selectedFlight = null;
+    sessionStorage.removeItem('selectedFlight');
+    document.getElementById('flight-info').innerHTML = `
+        <p class="text-muted">航空券が選択されていません。</p>
+        <a href="{% url 'flight_search' %}" class="btn btn-outline-primary btn-sm">
+            航空券を選択
+        </a>
+    `;
+    document.getElementById('flight-info').className = 'alert alert-light';
+    document.getElementById('flight-id').value = '';
+    updateTotal();
+    toggleBookingForm();
+}
+
+function clearSelections() {
+    if (confirm('選択内容をすべてクリアしますか？')) {
+        removeAccommodation();
+        removeFlight();
+    }
+}
+
+// フォーム送信前の最終確認
+document.getElementById('booking-form').addEventListener('submit', function(e) {
+    if (!selectedAccommodation && !selectedFlight) {
+        e.preventDefault();
+        alert('宿泊施設または航空券を選択してください。');
+        return;
+    }
+    
+    const total = (selectedAccommodation?.price || 0) + (selectedFlight?.price || 0);
+    if (!confirm(`合計金額 ¥${total.toLocaleString()} で予約を確定しますか？`)) {
+        e.preventDefault();
+    }
+});
+</script>
+{% endblock %}

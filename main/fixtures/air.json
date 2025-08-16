@@ -1,0 +1,152 @@
+[
+  {
+    "model": "main.air",
+    "pk": 1,
+    "fields": {
+      "name": "JAL",
+      "flight_number": "JL101",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "大阪",
+      "departure_time": "2025-08-17T08:00:00Z",
+      "arrival_time": "2025-08-17T09:15:00Z",
+      "fee": 25000,
+      "available_seats": 150
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 2,
+    "fields": {
+      "name": "ANA",
+      "flight_number": "NH205",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "沖縄",
+      "departure_time": "2025-08-18T10:30:00Z",
+      "arrival_time": "2025-08-18T13:45:00Z",
+      "fee": 45000,
+      "available_seats": 180
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 3,
+    "fields": {
+      "name": "スカイマーク",
+      "flight_number": "BC301",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "札幌",
+      "departure_time": "2025-08-19T07:15:00Z",
+      "arrival_time": "2025-08-19T08:55:00Z",
+      "fee": 30000,
+      "available_seats": 120
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 4,
+    "fields": {
+      "name": "JAL",
+      "flight_number": "JL401",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "福岡",
+      "departure_time": "2025-08-20T14:20:00Z",
+      "arrival_time": "2025-08-20T16:30:00Z",
+      "fee": 35000,
+      "available_seats": 160
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 5,
+    "fields": {
+      "name": "ANA",
+      "flight_number": "NH501",
+      "flight_type": "domestic",
+      "place_from": "大阪",
+      "place_to": "東京",
+      "departure_time": "2025-08-21T18:00:00Z",
+      "arrival_time": "2025-08-21T19:15:00Z",
+      "fee": 25000,
+      "available_seats": 140
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 6,
+    "fields": {
+      "name": "ANA",
+      "flight_number": "NH601",
+      "flight_type": "domestic",
+      "place_from": "沖縄",
+      "place_to": "東京",
+      "departure_time": "2025-08-22T16:30:00Z",
+      "arrival_time": "2025-08-22T19:15:00Z",
+      "fee": 45000,
+      "available_seats": 170
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 7,
+    "fields": {
+      "name": "スカイマーク",
+      "flight_number": "BC701",
+      "flight_type": "domestic",
+      "place_from": "札幌",
+      "place_to": "東京",
+      "departure_time": "2025-08-23T20:10:00Z",
+      "arrival_time": "2025-08-23T21:50:00Z",
+      "fee": 30000,
+      "available_seats": 110
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 8,
+    "fields": {
+      "name": "JAL",
+      "flight_number": "JL801",
+      "flight_type": "domestic",
+      "place_from": "福岡",
+      "place_to": "東京",
+      "departure_time": "2025-08-24T19:45:00Z",
+      "arrival_time": "2025-08-24T21:30:00Z",
+      "fee": 35000,
+      "available_seats": 155
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 9,
+    "fields": {
+      "name": "JAL",
+      "flight_number": "JL902",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-25T11:00:00Z",
+      "arrival_time": "2025-08-25T13:30:00Z",
+      "fee": 65000,
+      "available_seats": 200
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 10,
+    "fields": {
+      "name": "ANA",
+      "flight_number": "NH903",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-26T15:30:00Z",
+      "arrival_time": "2025-08-26T17:45:00Z",
+      "fee": 65000,
+      "available_seats": 190
+    }
+  }
+]

@@ -1,0 +1,114 @@
+[
+  {
+    "model": "main.travelpackage",
+    "pk": 1,
+    "fields": {
+      "name": "東京⇔大阪ビジネス出張プラン",
+      "description": "効率的なビジネス出張に最適。新幹線より快適な空の旅で、時間を有効活用。大阪駅前のホテルで移動も楽々。",
+      "total_price": 75000,
+      "outbound_flight": 1,
+      "return_flight": 5,
+      "accommodation": 2,
+      "stay_duration": 2,
+      "is_available": true
+    }
+  },
+  {
+    "model": "main.travelpackage",
+    "pk": 2,
+    "fields": {
+      "name": "沖縄リゾート満喫3泊4日",
+      "description": "美しい沖縄の海を満喫できるリゾートパッケージ。家族連れやカップルに人気。ビーチアクセス抜群のホテルでゆったり過ごせます。",
+      "total_price": 120000,
+      "outbound_flight": 2,
+      "return_flight": 6,
+      "accommodation": 3,
+      "stay_duration": 3,
+      "is_available": true
+    }
+  },
+  {
+    "model": "main.travelpackage",
+    "pk": 3,
+    "fields": {
+      "name": "北海道グルメ&観光ツアー",
+      "description": "札幌の美味しいグルメと観光を楽しむプラン。新鮮な海の幸と大自然を満喫。朝食バイキングと大浴場で旅の疲れを癒やせます。",
+      "total_price": 85000,
+      "outbound_flight": 3,
+      "return_flight": 7,
+      "accommodation": 4,
+      "stay_duration": 2,
+      "is_available": true
+    }
+  },
+  {
+    "model": "main.travelpackage",
+    "pk": 4,
+    "fields": {
+      "name": "九州福岡グルメ旅",
+      "description": "博多ラーメンやもつ鍋など、福岡の名物グルメを堪能。コストパフォーマンス抜群のプランで気軽に九州を楽しめます。",
+      "total_price": 55000,
+      "outbound_flight": 4,
+      "return_flight": 8,
+      "accommodation": 6,
+      "stay_duration": 2,
+      "is_available": true
+    }
+  },
+  {
+    "model": "main.travelpackage",
+    "pk": 5,
+    "fields": {
+      "name": "東京高級ホテルステイ",
+      "description": "東京の5つ星ホテルで贅沢なひとときを。ビジネスにも観光にも最適な立地で、上質なサービスをご提供。",
+      "total_price": 95000,
+      "outbound_flight": null,
+      "return_flight": null,
+      "accommodation": 1,
+      "stay_duration": 2,
+      "is_available": true
+    }
+  },
+  {
+    "model": "main.travelpackage",
+    "pk": 6,
+    "fields": {
+      "name": "京都伝統文化体験",
+      "description": "祇園の老舗旅館で本格的な日本文化を体験。懐石料理、温泉、茶室でのお茶体験など、忘れられない思い出を。",
+      "total_price": 180000,
+      "outbound_flight": null,
+      "return_flight": null,
+      "accommodation": 5,
+      "stay_duration": 3,
+      "is_available": true
+    }
+  },
+  {
+    "model": "main.travelpackage",
+    "pk": 7,
+    "fields": {
+      "name": "韓国ソウル2泊3日",
+      "description": "人気の韓国ソウル旅行。ショッピング、グルメ、Kポップ文化を満喫。東京からのアクセスも良好で週末旅行にも最適。",
+      "total_price": 95000,
+      "outbound_flight": 9,
+      "return_flight": 10,
+      "accommodation": 1,
+      "stay_duration": 2,
+      "is_available": true
+    }
+  },
+  {
+    "model": "main.travelpackage",
+    "pk": 8,
+    "fields": {
+      "name": "沖縄日帰り弾丸ツアー",
+      "description": "忙しい方にもおすすめの沖縄日帰りプラン。美しい海を見て、沖縄料理を味わって、その日のうちに帰京。",
+      "total_price": 60000,
+      "outbound_flight": 2,
+      "return_flight": 6,
+      "accommodation": null,
+      "stay_duration": 0,
+      "is_available": false
+    }
+  }
+]

@@ -1,0 +1,304 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ system_name }} - AI チャット{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-header {
+        background: linear-gradient(135deg, 
+            {% if system_type == 'ai_agent' %}#007bff, #0056b3
+            {% elif system_type == 'ai_assistant' %}#17a2b8, #138496
+            {% else %}#ffc107, #e0a800{% endif %});
+        color: white;
+    }
+    .typing-indicator {
+        display: none;
+        padding: 10px;
+        font-style: italic;
+        color: #666;
+    }
+    .typing-dots {
+        display: inline-block;
+        position: relative;
+        width: 20px;
+        height: 4px;
+    }
+    .typing-dots::before {
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #666;
+        animation: typingDots 1.4s infinite;
+    }
+    @keyframes typingDots {
+        0%, 20% { transform: scale(1); }
+        50% { transform: scale(1.5); }
+        80%, 100% { transform: scale(1); }
+    }
+    .performance-info {
+        font-size: 0.8em;
+        color: #666;
+        border-top: 1px solid #eee;
+        padding-top: 5px;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- チャットヘッダー -->
+            <div class="card">
+                <div class="card-header chat-header text-center">
+                    <h3>
+                        {% if system_type == 'ai_agent' %}
+                            <i class="fas fa-robot"></i>
+                        {% elif system_type == 'ai_assistant' %}
+                            <i class="fas fa-cog"></i>
+                        {% else %}
+                            <i class="fas fa-list-check"></i>
+                        {% endif %}
+                        {{ system_name }}
+                    </h3>
+                    <p class="mb-0">
+                        {% if system_type == 'ai_agent' %}
+                            高度な自然言語理解でお手伝いします
+                        {% elif system_type == 'ai_assistant' %}
+                            効率的な予約サポートを提供します
+                        {% else %}
+                            確実で高速な応答でサポートします
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <!-- チャット画面 -->
+                <div id="chat-container" class="chat-container">
+                    <div class="message system-message">
+                        <strong>{{ system_name }}:</strong>
+                        {% if system_type == 'ai_agent' %}
+                            こんにちは！私はAIエージェントです。旅行のご相談から具体的な予約まで、自然な会話でサポートします。どのようなご旅行をお考えでしょうか？
+                        {% elif system_type == 'ai_assistant' %}
+                            こんにちは！AIアシスタントです。効率的な旅行検索と予約をサポートします。検索条件を教えてください。
+                        {% else %}
+                            こんにちは！ルールベースBotです。以下からお選びください：
+                            <br>1. 旅行検索
+                            <br>2. 予約確認  
+                            <br>3. よくある質問
+                        {% endif %}
+                    </div>
+                    
+                    <div id="typing-indicator" class="typing-indicator">
+                        {{ system_name }}が入力中 <span class="typing-dots"></span>
+                    </div>
+                </div>
+
+                <!-- 入力フォーム -->
+                <div class="card-footer">
+                    <form id="chat-form" class="d-flex">
+                        <input type="text" id="message-input" class="form-control me-2" 
+                               placeholder="メッセージを入力してください..." autocomplete="off">
+                        <button type="submit" class="btn 
+                            {% if system_type == 'ai_agent' %}btn-primary
+                            {% elif system_type == 'ai_assistant' %}btn-info
+                            {% else %}btn-warning{% endif %}">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                    
+                    <!-- パフォーマンス情報 -->
+                    <div id="performance-info" class="performance-info mt-2" style="display: none;">
+                        <small>
+                            応答時間: <span id="response-time">-</span>秒 | 
+                            インテント: <span id="detected-intent">-</span>
+                        </small>
+                    </div>
+
+                    <!-- 他のシステム比較リンク -->
+                    <div class="mt-3 text-center">
+                        <small class="text-muted">他のシステムと比較:</small><br>
+                        {% if system_type != 'ai_agent' %}
+                            <a href="{% url 'chat_interface' 'ai_agent' %}" class="btn btn-outline-primary btn-sm me-1">AIエージェント</a>
+                        {% endif %}
+                        {% if system_type != 'ai_assistant' %}
+                            <a href="{% url 'chat_interface' 'ai_assistant' %}" class="btn btn-outline-info btn-sm me-1">AIアシスタント</a>
+                        {% endif %}
+                        {% if system_type != 'rule_bot' %}
+                            <a href="{% url 'chat_interface' 'rule_bot' %}" class="btn btn-outline-warning btn-sm">ルールBot</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- システム情報パネル -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6>このシステムについて:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% if system_type == 'ai_agent' %}
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> 複雑な質問理解</li>
+                                    <li><i class="fas fa-check text-success"></i> 文脈考慮</li>
+                                    <li><i class="fas fa-check text-success"></i> 柔軟な対応</li>
+                                </ul>
+                            {% elif system_type == 'ai_assistant' %}
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> 効率的処理</li>
+                                    <li><i class="fas fa-check text-success"></i> データ検索</li>
+                                    <li><i class="fas fa-check text-success"></i> タスク最適化</li>
+                                </ul>
+                            {% else %}
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> 高速応答</li>
+                                    <li><i class="fas fa-check text-success"></i> 確実な処理</li>
+                                    <li><i class="fas fa-check text-success"></i> 低コスト</li>
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                {% if system_type == 'ai_agent' %}
+                                    大規模言語モデルを使用した高度なAI。OpenAI APIなどと連携し、自然な会話が可能です。
+                                {% elif system_type == 'ai_assistant' %}
+                                    特定タスクに特化したAI。効率的なデータ処理と検索を得意とします。
+                                {% else %}
+                                    事前定義されたルールに基づく応答システム。確実で高速な処理が特徴です。
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const sessionId = '{{ session_id }}';
+const systemType = '{{ system_type }}';
+let messageCount = 0;
+
+document.getElementById('chat-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value.trim();
+    
+    if (!message) return;
+    
+    // ユーザーメッセージを表示
+    addMessage(message, 'user');
+    messageInput.value = '';
+    messageCount++;
+    
+    // タイピングインジケーター表示
+    showTypingIndicator();
+    
+    try {
+        const startTime = Date.now();
+        
+        const response = await fetch('/api/chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                session_id: sessionId,
+                message: message
+            })
+        });
+        
+        const data = await response.json();
+        const responseTime = (Date.now() - startTime) / 1000;
+        
+        // タイピングインジケーター非表示
+        hideTypingIndicator();
+        
+        if (response.ok) {
+            // システム応答を表示
+            addMessage(data.response, 'system', {
+                responseTime: responseTime,
+                intent: data.intent || '',
+                processingTime: data.processing_time || 0
+            });
+            
+            // パフォーマンス情報更新
+            updatePerformanceInfo(responseTime, data.intent);
+        } else {
+            addMessage('エラーが発生しました: ' + (data.error || 'Unknown error'), 'system');
+        }
+    } catch (error) {
+        hideTypingIndicator();
+        addMessage('通信エラーが発生しました。', 'system');
+        console.error('Error:', error);
+    }
+});
+
+function addMessage(content, type, metadata = {}) {
+    const chatContainer = document.getElementById('chat-container');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}-message`;
+    
+    if (type === 'user') {
+        messageDiv.innerHTML = `<strong>あなた:</strong> ${content}`;
+    } else {
+        let systemName = '';
+        if (systemType === 'ai_agent') systemName = 'AIエージェント';
+        else if (systemType === 'ai_assistant') systemName = 'AIアシスタント';
+        else systemName = 'ルールベースBot';
+        
+        messageDiv.innerHTML = `<strong>${systemName}:</strong> ${content}`;
+        
+        // パフォーマンス情報を追加
+        if (metadata.responseTime) {
+            const perfDiv = document.createElement('div');
+            perfDiv.className = 'performance-info';
+            perfDiv.innerHTML = `
+                <small>
+                    応答時間: ${metadata.responseTime.toFixed(3)}秒
+                    ${metadata.intent ? ` | インテント: ${metadata.intent}` : ''}
+                </small>
+            `;
+            messageDiv.appendChild(perfDiv);
+        }
+    }
+    
+    chatContainer.insertBefore(messageDiv, document.getElementById('typing-indicator'));
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function showTypingIndicator() {
+    document.getElementById('typing-indicator').style.display = 'block';
+    document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
+}
+
+function hideTypingIndicator() {
+    document.getElementById('typing-indicator').style.display = 'none';
+}
+
+function updatePerformanceInfo(responseTime, intent) {
+    const perfInfo = document.getElementById('performance-info');
+    document.getElementById('response-time').textContent = responseTime.toFixed(3);
+    document.getElementById('detected-intent').textContent = intent || 'なし';
+    perfInfo.style.display = 'block';
+}
+
+// Enterキーで送信
+document.getElementById('message-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+    }
+});
+
+// ページ読み込み時にフォーカス
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('message-input').focus();
+});
+</script>
+{% endblock %}

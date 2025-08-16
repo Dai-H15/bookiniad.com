@@ -1,0 +1,86 @@
+[
+  {
+    "model": "main.accommodations",
+    "pk": 1,
+    "fields": {
+      "name": "東京グランドホテル",
+      "rank": 5,
+      "location": "東京駅前",
+      "description": "東京駅から徒歩3分の高級ホテル。ビジネスにも観光にも最適なロケーション。",
+      "amenities": ["WiFi", "朝食バイキング", "フィットネスジム", "スパ", "コンシェルジュ"],
+      "price_per_night": 25000,
+      "image_url": "https://example.com/tokyo-grand-hotel.jpg",
+      "total_rooms": 120
+    }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 2,
+    "fields": {
+      "name": "大阪ビジネスホテル",
+      "rank": 3,
+      "location": "大阪駅周辺",
+      "description": "リーズナブルな価格でビジネス利用に最適。清潔で機能的な客室。",
+      "amenities": ["WiFi", "朝食", "ランドリー"],
+      "price_per_night": 8000,
+      "image_url": "https://example.com/osaka-business-hotel.jpg",
+      "total_rooms": 80
+    }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 3,
+    "fields": {
+      "name": "沖縄リゾートホテル",
+      "rank": 4,
+      "location": "那覇市",
+      "description": "美しい海を望むリゾートホテル。家族連れにも人気のホテル。",
+      "amenities": ["WiFi", "プール", "ビーチアクセス", "レストラン", "キッズルーム"],
+      "price_per_night": 18000,
+      "image_url": "https://example.com/okinawa-resort-hotel.jpg",
+      "total_rooms": 200
+    }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 4,
+    "fields": {
+      "name": "札幌シティホテル",
+      "rank": 4,
+      "location": "札幌駅前",
+      "description": "札幌の中心部に位置するモダンなホテル。観光・ビジネス両方に便利。",
+      "amenities": ["WiFi", "朝食バイキング", "大浴場", "レストラン"],
+      "price_per_night": 12000,
+      "image_url": "https://example.com/sapporo-city-hotel.jpg",
+      "total_rooms": 150
+    }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 5,
+    "fields": {
+      "name": "京都伝統旅館",
+      "rank": 5,
+      "location": "祇園",
+      "description": "伝統的な日本の「おもてなし」を体験できる老舗旅館。",
+      "amenities": ["WiFi", "懐石料理", "温泉", "庭園", "茶室"],
+      "price_per_night": 35000,
+      "image_url": "https://example.com/kyoto-traditional-ryokan.jpg",
+      "total_rooms": 30
+    }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 6,
+    "fields": {
+      "name": "福岡エコノミーホテル",
+      "rank": 2,
+      "location": "博多駅前",
+      "description": "清潔で安価な宿泊施設。バックパッカーや出張者に人気。",
+      "amenities": ["WiFi", "朝食", "コインランドリー"],
+      "price_per_night": 6000,
+      "image_url": "https://example.com/fukuoka-economy-hotel.jpg",
+      "total_rooms": 60
+    }
+  }
+]

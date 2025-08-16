@@ -1,0 +1,307 @@
+{% extends 'main/base.html' %}
+
+{% block title %}bookiniad.com - AIエージェント比較予約サイト{% endblock %}
+
+{% block content %}
+<!-- ヒーローセクション -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 mb-4">AIエージェント比較体験</h1>
+        <p class="lead mb-4">3つの異なるAIシステムで旅行予約を体験してみましょう</p>
+        
+        <!-- 検索タブ -->
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card bg-white text-dark">
+                    <div class="card-body">
+                        <!-- タブナビゲーション -->
+                        <ul class="nav nav-tabs" id="searchTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="package-tab" data-bs-toggle="tab" data-bs-target="#package" type="button" role="tab">パッケージ検索</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="accommodation-tab" data-bs-toggle="tab" data-bs-target="#accommodation" type="button" role="tab">宿泊施設検索</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="flight-tab" data-bs-toggle="tab" data-bs-target="#flight" type="button" role="tab">航空券検索</button>
+                            </li>
+                        </ul>
+                        
+                        <!-- タブコンテンツ -->
+                        <div class="tab-content" id="searchTabContent">
+                            <!-- パッケージ検索 -->
+                            <div class="tab-pane fade show active" id="package" role="tabpanel">
+                                <h5 class="card-title mt-3">旅行パッケージを検索</h5>
+                                <form method="GET" action="{% url 'search_results' %}">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <select class="form-select" name="departure">
+                                                <option value="">出発地を選択</option>
+                                                {% for dest in destinations %}
+                                                    <option value="{{ dest }}">{{ dest }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-select" name="destination">
+                                                <option value="">目的地を選択</option>
+                                                {% for dest in destinations %}
+                                                    <option value="{{ dest }}">{{ dest }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="date" class="form-control" name="departure_date" placeholder="出発日">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="date" class="form-control" name="return_date" placeholder="帰国日">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-select" name="people">
+                                                <option value="1">1名</option>
+                                                <option value="2">2名</option>
+                                                <option value="3">3名</option>
+                                                <option value="4">4名</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary btn-lg">
+                                                <i class="fas fa-search"></i> パッケージ検索
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- 宿泊施設検索 -->
+                            <div class="tab-pane fade" id="accommodation" role="tabpanel">
+                                <h5 class="card-title mt-3">宿泊施設を検索</h5>
+                                <form method="GET" action="{% url 'accommodation_search' %}">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="location" placeholder="地域・都市名">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-select" name="min_rank">
+                                                <option value="">星数（最低）</option>
+                                                <option value="1">1つ星以上</option>
+                                                <option value="2">2つ星以上</option>
+                                                <option value="3">3つ星以上</option>
+                                                <option value="4">4つ星以上</option>
+                                                <option value="5">5つ星のみ</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-select" name="max_price">
+                                                <option value="">予算上限</option>
+                                                <option value="10000">~10,000円</option>
+                                                <option value="20000">~20,000円</option>
+                                                <option value="30000">~30,000円</option>
+                                                <option value="50000">~50,000円</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="date" class="form-control" name="check_in" placeholder="チェックイン">
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-success btn-lg">
+                                                <i class="fas fa-bed"></i> 宿泊施設検索
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- 航空券検索 -->
+                            <div class="tab-pane fade" id="flight" role="tabpanel">
+                                <h5 class="card-title mt-3">航空券を検索</h5>
+                                <form method="GET" action="{% url 'flight_search' %}">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="departure" placeholder="出発地">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="destination" placeholder="到着地">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="date" class="form-control" name="departure_date" placeholder="出発日">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-select" name="flight_type">
+                                                <option value="">便種別</option>
+                                                <option value="domestic">国内線</option>
+                                                <option value="international">国際線</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-select" name="max_price">
+                                                <option value="">予算上限</option>
+                                                <option value="30000">~30,000円</option>
+                                                <option value="50000">~50,000円</option>
+                                                <option value="100000">~100,000円</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-info btn-lg">
+                                                <i class="fas fa-plane"></i> 航空券検索
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AI比較セクション -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">3つのAIシステムを比較体験</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card system-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-robot fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">AIエージェント</h5>
+                        <p class="card-text">OpenAI APIを使用した高度な自然言語理解能力を持つAI</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success"></i> 複雑な会話理解</li>
+                            <li><i class="fas fa-check text-success"></i> 文脈の把握</li>
+                            <li><i class="fas fa-check text-success"></i> 柔軟な対応</li>
+                        </ul>
+                        <a href="{% url 'chat_interface' 'ai_agent' %}" class="btn btn-primary">体験する</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card system-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-cog fa-3x text-info"></i>
+                        </div>
+                        <h5 class="card-title">AIアシスタント</h5>
+                        <p class="card-text">タスク特化型の効率的なAIアシスタント</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success"></i> 効率的な処理</li>
+                            <li><i class="fas fa-check text-success"></i> データ検索</li>
+                            <li><i class="fas fa-check text-success"></i> 予約支援</li>
+                        </ul>
+                        <a href="{% url 'chat_interface' 'ai_assistant' %}" class="btn btn-info">体験する</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card system-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-list-check fa-3x text-warning"></i>
+                        </div>
+                        <h5 class="card-title">ルールベースBot</h5>
+                        <p class="card-text">事前定義されたルールに基づく確実な応答システム</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success"></i> 確実な応答</li>
+                            <li><i class="fas fa-check text-success"></i> 高速処理</li>
+                            <li><i class="fas fa-check text-success"></i> キーワード検出</li>
+                        </ul>
+                        <a href="{% url 'chat_interface' 'rule_bot' %}" class="btn btn-warning">体験する</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'ai_comparison' %}" class="btn btn-outline-primary btn-lg">詳細比較ページへ</a>
+        </div>
+    </div>
+</section>
+
+<!-- 人気パッケージセクション -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">人気の旅行パッケージ</h2>
+        <div class="row">
+            {% for package in popular_packages %}
+            <div class="col-md-4 mb-4">
+                <div class="card package-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ package.name }}</h5>
+                        <p class="card-text">{{ package.description|truncatewords:15 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-primary">¥{{ package.total_price|floatformat:0 }}</span>
+                            <small class="text-muted">{{ package.stay_duration }}泊</small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <button class="btn btn-outline-primary btn-sm">詳細を見る</button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <h5>パッケージデータがありません</h5>
+                    <p>管理画面からサンプルデータを登録してください</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- 特徴セクション -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2>なぜAI比較なのか？</h2>
+                <p class="lead">異なるAI技術の特徴を理解し、最適なシステムを体験できます。</p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-chart-line text-primary"></i> <strong>パフォーマンス比較</strong> - 応答時間や精度を数値で確認</li>
+                    <li class="mb-2"><i class="fas fa-comments text-info"></i> <strong>対話体験</strong> - 実際の会話を通して違いを実感</li>
+                    <li class="mb-2"><i class="fas fa-brain text-warning"></i> <strong>学習効果</strong> - AI技術の理解を深める</li>
+                </ul>
+                <a href="{% url 'performance_analysis' %}" class="btn btn-success">パフォーマンス分析を見る</a>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center">
+                    <i class="fas fa-chart-bar fa-5x text-muted"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ページロード時の日付検証JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 今日の日付を取得
+    const today = new Date().toISOString().split('T')[0];
+    
+    // すべての日付入力フィールドを取得
+    const dateFields = document.querySelectorAll('input[type="date"]');
+    
+    dateFields.forEach(function(field) {
+        // 最小日付を今日に設定
+        field.setAttribute('min', today);
+        
+        // パッケージ検索の出発日と帰国日の関係性チェック
+        if (field.name === 'departure_date') {
+            field.addEventListener('change', function() {
+                const returnDateField = document.querySelector('input[name="return_date"]');
+                if (returnDateField && this.value) {
+                    returnDateField.setAttribute('min', this.value);
+                    if (returnDateField.value && returnDateField.value < this.value) {
+                        returnDateField.value = '';
+                    }
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

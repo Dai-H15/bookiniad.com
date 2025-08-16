@@ -101,7 +101,7 @@
                                 </div>
                                 <div class="col-md-4 text-md-end">
                                     <div class="h6 text-primary">¥{{ booking.accommodation.price_per_night|floatformat:0 }}/泊</div>
-                                    <div class="text-muted">{{ booking.nights }}泊 × ¥{{ booking.accommodation.price_per_night|floatformat:0 }}</div>
+                                    <div class="text-muted">{{ booking.nights }}泊 × {{ booking.guests }}名 × ¥{{ booking.accommodation.price_per_night|floatformat:0 }}</div>
                                     <div class="fw-bold">¥{{ booking.accommodation_total|floatformat:0 }}</div>
                                 </div>
                             </div>
@@ -133,7 +133,9 @@
                                     </span>
                                 </div>
                                 <div class="col-md-4 text-md-end">
-                                    <div class="h6 text-primary">¥{{ booking.outbound_flight.fee|floatformat:0 }}</div>
+                                    <div class="h6 text-primary">¥{{ booking.outbound_flight.fee|floatformat:0 }}/名</div>
+                                    <div class="text-muted">{{ booking.guests }}名 × ¥{{ booking.outbound_flight.fee|floatformat:0 }}</div>
+                                    <div class="fw-bold">¥{{ booking.flight_total|floatformat:0 }}</div>
                                 </div>
                             </div>
                         </div>
@@ -158,14 +160,14 @@
                                     <tbody>
                                         {% if booking.accommodation %}
                                         <tr>
-                                            <td>宿泊料金</td>
+                                            <td>宿泊料金 ({{ booking.nights }}泊 × {{ booking.guests }}名)</td>
                                             <td class="text-end">¥{{ booking.accommodation_total|floatformat:0 }}</td>
                                         </tr>
                                         {% endif %}
                                         {% if booking.outbound_flight %}
                                         <tr>
-                                            <td>航空券代金</td>
-                                            <td class="text-end">¥{{ booking.outbound_flight.fee|floatformat:0 }}</td>
+                                            <td>航空券代金 ({{ booking.guests }}名分)</td>
+                                            <td class="text-end">¥{{ booking.flight_total|floatformat:0 }}</td>
                                         </tr>
                                         {% endif %}
                                     </tbody>

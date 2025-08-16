@@ -173,6 +173,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const nextDay = new Date(checkinDate);
         nextDay.setDate(nextDay.getDate() + 1);
         document.getElementById('check_out_date').min = nextDay.toISOString().split('T')[0];
+        
+        // 料金を再計算
+        updateTotal();
+    });
+    
+    // チェックアウト日変更時にも料金を再計算
+    document.getElementById('check_out_date').addEventListener('change', function() {
+        updateTotal();
+    });
+    
+    // 宿泊人数変更時にも料金を再計算
+    document.getElementById('guests').addEventListener('change', function() {
+        updateTotal();
     });
 });
 
@@ -184,11 +197,32 @@ function loadSelections() {
     if (accommodationData) {
         selectedAccommodation = JSON.parse(accommodationData);
         displayAccommodation();
+        
+        // 宿泊施設選択時の日付情報を自動入力
+        if (selectedAccommodation.checkin_date && selectedAccommodation.checkout_date) {
+            document.getElementById('check_in_date').value = selectedAccommodation.checkin_date;
+            document.getElementById('check_out_date').value = selectedAccommodation.checkout_date;
+        }
+        
+        // 人数情報も自動入力
+        if (selectedAccommodation.guests) {
+            document.getElementById('guests').value = selectedAccommodation.guests;
+        }
     }
     
     if (flightData) {
         selectedFlight = JSON.parse(flightData);
         displayFlight();
+        
+        // 航空券選択時の出発日情報を自動入力（宿泊日が設定されていない場合）
+        if (flightData.departure_date && !document.getElementById('check_in_date').value) {
+            document.getElementById('check_in_date').value = flightData.departure_date;
+            
+            // チェックアウト日を翌日に設定
+            const departureDate = new Date(flightData.departure_date);
+            departureDate.setDate(departureDate.getDate() + 1);
+            document.getElementById('check_out_date').value = departureDate.toISOString().split('T')[0];
+        }
     }
     
     updateTotal();
@@ -198,11 +232,17 @@ function loadSelections() {
 function displayAccommodation() {
     if (!selectedAccommodation) return;
     
+    let dateInfo = '';
+    if (selectedAccommodation.checkin_date && selectedAccommodation.checkout_date) {
+        dateInfo = `<p class="mb-1 text-muted"><i class="fas fa-calendar"></i> ${selectedAccommodation.checkin_date} 〜 ${selectedAccommodation.checkout_date}</p>`;
+    }
+    
     document.getElementById('accommodation-info').innerHTML = `
         <div class="d-flex justify-content-between align-items-start">
             <div>
                 <h6 class="mb-1">${selectedAccommodation.name}</h6>
                 <p class="mb-1 text-muted">¥${selectedAccommodation.price.toLocaleString()}/泊</p>
+                ${dateInfo}
             </div>
             <button class="btn btn-outline-danger btn-sm" onclick="removeAccommodation()">
                 <i class="fas fa-times"></i>
@@ -216,12 +256,18 @@ function displayAccommodation() {
 function displayFlight() {
     if (!selectedFlight) return;
     
+    let flightDateInfo = '';
+    if (selectedFlight.departure_date) {
+        flightDateInfo = `<p class="mb-1 text-muted"><i class="fas fa-calendar"></i> ${selectedFlight.departure_date}</p>`;
+    }
+    
     document.getElementById('flight-info').innerHTML = `
         <div class="d-flex justify-content-between align-items-start">
             <div>
                 <h6 class="mb-1">${selectedFlight.airline}</h6>
                 <p class="mb-1 text-muted">${selectedFlight.departure} → ${selectedFlight.destination}</p>
                 <p class="mb-1 text-muted">出発: ${selectedFlight.departureTime}</p>
+                ${flightDateInfo}
                 <p class="mb-1 text-muted">¥${selectedFlight.price.toLocaleString()}</p>
             </div>
             <button class="btn btn-outline-danger btn-sm" onclick="removeFlight()">
@@ -237,14 +283,33 @@ function updateTotal() {
     let total = 0;
     let breakdown = '';
     
+    // 宿泊人数を取得
+    const guestsElement = document.getElementById('guests');
+    const guests = guestsElement ? parseInt(guestsElement.value) || 1 : 1;
+    
     if (selectedAccommodation) {
-        total += selectedAccommodation.price;
-        breakdown += `<tr><td>宿泊施設</td><td class="text-end">¥${selectedAccommodation.price.toLocaleString()}</td></tr>`;
+        // 宿泊日数を計算
+        let nights = 1;
+        const checkinDate = document.getElementById('check_in_date').value;
+        const checkoutDate = document.getElementById('check_out_date').value;
+        
+        if (checkinDate && checkoutDate) {
+            const checkin = new Date(checkinDate);
+            const checkout = new Date(checkoutDate);
+            nights = Math.max(1, Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24)));
+        }
+        
+        // 宿泊人数を考慮した料金計算
+        const accommodationTotal = selectedAccommodation.price * nights * guests;
+        total += accommodationTotal;
+        breakdown += `<tr><td>宿泊施設 (${nights}泊 × ${guests}名)</td><td class="text-end">¥${accommodationTotal.toLocaleString()}</td></tr>`;
     }
     
     if (selectedFlight) {
-        total += selectedFlight.price;
-        breakdown += `<tr><td>航空券</td><td class="text-end">¥${selectedFlight.price.toLocaleString()}</td></tr>`;
+        // 航空券も人数分を計算
+        const flightTotal = selectedFlight.price * guests;
+        total += flightTotal;
+        breakdown += `<tr><td>航空券 (${guests}名分)</td><td class="text-end">¥${flightTotal.toLocaleString()}</td></tr>`;
     }
     
     if (total > 0) {
@@ -310,7 +375,30 @@ document.getElementById('booking-form').addEventListener('submit', function(e) {
         return;
     }
     
-    const total = (selectedAccommodation?.price || 0) + (selectedFlight?.price || 0);
+    // 正確な料金を計算（人数・日数を考慮）
+    let total = 0;
+    const guestsElement = document.getElementById('guests');
+    const guests = guestsElement ? parseInt(guestsElement.value) || 1 : 1;
+    
+    if (selectedAccommodation) {
+        // 宿泊日数を計算
+        let nights = 1;
+        const checkinDate = document.getElementById('check_in_date').value;
+        const checkoutDate = document.getElementById('check_out_date').value;
+        
+        if (checkinDate && checkoutDate) {
+            const checkin = new Date(checkinDate);
+            const checkout = new Date(checkoutDate);
+            nights = Math.max(1, Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24)));
+        }
+        
+        total += selectedAccommodation.price * nights * guests;
+    }
+    
+    if (selectedFlight) {
+        total += selectedFlight.price * guests;
+    }
+    
     if (!confirm(`合計金額 ¥${total.toLocaleString()} で予約を確定しますか？`)) {
         e.preventDefault();
     }

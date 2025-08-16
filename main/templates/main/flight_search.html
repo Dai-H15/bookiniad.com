@@ -323,6 +323,9 @@ function toggleView(viewType) {
 }
 
 function selectFlight(id, airline, departure, destination, departureTime, price) {
+    // 現在選択されている出発日を取得
+    const selectedDepartureDate = document.getElementById('departure_date').value;
+    
     // セッションストレージに保存
     sessionStorage.setItem('selectedFlight', JSON.stringify({
         id: id,
@@ -330,7 +333,8 @@ function selectFlight(id, airline, departure, destination, departureTime, price)
         departure: departure,
         destination: destination,
         departureTime: departureTime,
-        price: price
+        price: price,
+        departure_date: selectedDepartureDate
     }));
     
     // モーダルに情報を設定

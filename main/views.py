@@ -388,15 +388,19 @@ def create_booking(request):
         outbound_flight = None
         total_price = 0
         accommodation_total = 0
+        flight_total = 0
         
         if accommodation_id:
             accommodation = get_object_or_404(Accommodations, id=accommodation_id)
-            accommodation_total = accommodation.price_per_night * nights
+            # 宿泊人数を考慮した料金計算（1泊あたりの料金 × 宿泊日数 × 人数）
+            accommodation_total = accommodation.price_per_night * nights * guests
             total_price += accommodation_total
             
         if flight_id:
             outbound_flight = get_object_or_404(Air, id=flight_id)
-            total_price += outbound_flight.fee
+            # 航空券も人数分を計算
+            flight_total = outbound_flight.fee * guests
+            total_price += flight_total
         
         # 予約を作成
         booking = Booking.objects.create(
@@ -426,6 +430,7 @@ def create_booking(request):
             'outbound_flight': outbound_flight,
             'total_price': total_price,
             'accommodation_total': accommodation_total,
+            'flight_total': flight_total,
             'nights': nights,
             'created_at': datetime.now()
         }
@@ -611,7 +616,6 @@ def handle_ai_assistant(message, session):
 
 def handle_rule_bot(message, session):
     """ルールベースBot（キーワード検出）の応答処理"""
-    message_lower = message.lower()
     
     # キーワードベースの単純な応答
     if any(word in message for word in ['こんにちは', 'hello', 'はじめまして']):

@@ -7,6 +7,7 @@ from django.db.models import Q
 import json
 import uuid
 import time
+from main.agents.agent import TravelAgentSystem
 from main.agents.bot import handle_rule_bot
 from main.agents.assistant import TravelChatAssistant
 
@@ -242,6 +243,7 @@ def flight_search(request):
     return_date = request.GET.get('return_date', '')
     flight_type = request.GET.get('flight_type', '')
     airline = request.GET.get('airline', '')
+    flight_number = request.GET.get('flight_number', '')  # 便名検索を追加
     min_price = request.GET.get('min_price', '')
     max_price = request.GET.get('max_price', '')
     passengers = request.GET.get('passengers', '1')
@@ -257,6 +259,8 @@ def flight_search(request):
         outbound_flights = outbound_flights.filter(place_from__icontains=departure)
     if destination:
         outbound_flights = outbound_flights.filter(place_to__icontains=destination)
+    if flight_number:  # 便名検索を追加
+        outbound_flights = outbound_flights.filter(flight_number__icontains=flight_number)
     
     # 復路の検索
     return_flights = []
@@ -267,6 +271,8 @@ def flight_search(request):
             return_flights = return_flights.filter(place_to__icontains=departure)
         if destination:
             return_flights = return_flights.filter(place_from__icontains=destination)
+        if flight_number:  # 復路でも便名検索を追加
+            return_flights = return_flights.filter(flight_number__icontains=flight_number)
     
     # 出発日による絞り込み
     if departure_date:
@@ -288,6 +294,7 @@ def flight_search(request):
             departures = list(Air.objects.values_list('place_from', flat=True).distinct())
             destinations_list = list(Air.objects.values_list('place_to', flat=True).distinct())
             airlines = list(Air.objects.values_list('name', flat=True).distinct())
+            flight_numbers = list(Air.objects.values_list('flight_number', flat=True).distinct())  # 便名リストを追加
             
             contexts = {
                 'flights': [],
@@ -299,6 +306,7 @@ def flight_search(request):
                     'return_date': return_date,
                     'flight_type': flight_type,
                     'airline': airline,
+                    'flight_number': flight_number,  # 便名を追加
                     'min_price': min_price,
                     'max_price': max_price,
                     'passengers': passengers
@@ -306,6 +314,7 @@ def flight_search(request):
                 'departures': sorted(departures),
                 'destinations': sorted(destinations_list),
                 'airlines': sorted(airlines),
+                'flight_numbers': sorted(flight_numbers),  # 便名リストを追加
                 'date_error_message': '正しい日付形式で入力してください。',
                 'is_paginated': False,
                 'total_results': 0,
@@ -354,6 +363,8 @@ def flight_search(request):
             filtered_flights = [f for f in filtered_flights if f.flight_type == flight_type]
         if airline:
             filtered_flights = [f for f in filtered_flights if airline.lower() in f.name.lower()]
+        if flight_number:  # 便名フィルタを追加
+            filtered_flights = [f for f in filtered_flights if flight_number.lower() in f.flight_number.lower()]
         if min_price:
             filtered_flights = [f for f in filtered_flights if f.fee >= int(min_price)]
         if max_price:
@@ -373,11 +384,9 @@ def flight_search(request):
     if is_round_trip:
         # 往復検索の場合は両方のフライトリストを提供
         all_flights = outbound_flights
-        total_flights_count = len(outbound_flights) + len(return_flights)
     else:
         # 片道検索の場合は往路のみ
         all_flights = outbound_flights
-        total_flights_count = len(outbound_flights)
     
     # ページネーション（往路のみ）
     paginator = Paginator(all_flights, 10)  # 1ページあたり10件表示
@@ -388,6 +397,7 @@ def flight_search(request):
     departures_list = list(Air.objects.values_list('place_from', flat=True).distinct())
     destinations_list = list(Air.objects.values_list('place_to', flat=True).distinct())
     airlines = list(Air.objects.values_list('name', flat=True).distinct())
+    flight_numbers = list(Air.objects.values_list('flight_number', flat=True).distinct())  # 便名リストを追加
     
     contexts = {
         'flights': page_flights,
@@ -399,6 +409,7 @@ def flight_search(request):
             'return_date': return_date,
             'flight_type': flight_type,
             'airline': airline,
+            'flight_number': flight_number,  # 便名を追加
             'min_price': min_price,
             'max_price': max_price,
             'passengers': passengers
@@ -406,6 +417,7 @@ def flight_search(request):
         'departures': sorted(departures_list),
         'destinations': sorted(destinations_list),
         'airlines': sorted(airlines),
+        'flight_numbers': sorted(flight_numbers),  # 便名リストを追加
         'is_paginated': page_flights.has_other_pages(),
         'page_obj': page_flights,
         'total_results': len(all_flights),
@@ -627,31 +639,107 @@ def clear_conversation_history(request):
 
 # AI応答処理関数群
 def handle_ai_agent(message, session):
-    """AIエージェント（高度なAI）の応答処理"""
-    # 実際の実装ではOpenAI APIを呼び出す
-    intents = detect_intent_advanced(message)
+    """AIエージェント（TravelAgentSystem使用）の応答処理"""
+    import asyncio
+    session_id = str(session.session_id)
     
-    if 'search' in intents or '検索' in message or '探して' in message:
+    try:
+        # 非同期処理を同期環境で実行するためのヘルパー関数
+        def run_agent_sync():
+            try:
+                # 新しいイベントループを作成して実行
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                
+                try:
+                    # TravelAgentSystemのインスタンスを作成（セッションIDで管理）
+                    agent_system = TravelAgentSystem(
+                        session_id=f"bookiniad_chat_{session_id}",
+                        db_path="./agents_conversation.db"
+                    )
+                    
+                    # ベースエージェントで応答を生成
+                    response_content = agent_system.chat(message, "base_agent")
+                    return response_content
+                    
+                finally:
+                    loop.close()
+                    
+            except Exception:
+                # TravelAgentSystemでエラーが発生した場合、フォールバックとしてTravelChatAssistantを使用
+                from main.agents.assistant import TravelChatAssistant
+                fallback_assistant = TravelChatAssistant()
+                return fallback_assistant.chat(message)
+        
+        # 同期的に非同期処理を実行
+        response_content = run_agent_sync()
+        
+        # 意図検出（メッセージ内容に基づく分類）
+        intent = 'general'
+        confidence = 0.8
+        
+        if any(word in message.lower() for word in ['航空券', 'フライト', '飛行機', 'air', '便']):
+            intent = 'flight_search'
+            confidence = 0.9
+        elif any(word in message.lower() for word in ['ホテル', '宿泊', '泊まり', 'hotel', 'accommodation', '宿']):
+            intent = 'accommodation_search'
+            confidence = 0.9
+        elif any(word in message.lower() for word in ['予約', 'booking', '予約番号', '照会']):
+            intent = 'booking_inquiry'
+            confidence = 0.9
+        elif any(word in message.lower() for word in ['推奨', 'おすすめ', 'recommend', '旅行', 'travel']):
+            intent = 'travel_recommendation'
+            confidence = 0.8
+        elif any(word in message.lower() for word in ['こんにちは', 'hello', 'はじめまして', 'こんばんは']):
+            intent = 'greeting'
+            confidence = 0.95
+        elif any(word in message.lower() for word in ['ありがとう', 'thank', 'thanks', 'すみません']):
+            intent = 'courtesy'
+            confidence = 0.9
+        
         return {
-            'content': '検索のお手伝いをします。どちらへご旅行をお考えでしょうか？\n具体的な条件（出発地、目的地、日程、人数、予算など）を教えてください。',
-            'intent': 'search_assistance',
-            'confidence': 0.9,
-            'reasoning': {'detected_keywords': ['検索', '探して'], 'context_analysis': 'travel_search'}
+            'content': response_content,
+            'intent': intent,
+            'confidence': confidence,
+            'reasoning': {
+                'model': 'TravelAgentSystem (Multi-Agent)',
+                'session_id': session_id,
+                'agent_system': 'base_agent',
+                'db_path': './agents_conversation.db',
+                'execution_mode': 'sync_wrapper'
+            }
         }
-    elif '予約' in message or 'booking' in message.lower():
-        return {
-            'content': '予約の手続きをサポートします。まず、ご希望の旅行プランを検索して、お気に入りのパッケージを見つけましょう。',
-            'intent': 'booking_assistance',
-            'confidence': 0.85,
-            'reasoning': {'intent_classification': 'booking', 'next_action': 'search_packages'}
-        }
-    else:
-        return {
-            'content': 'bookiniad.comへようこそ！航空券と宿泊施設をセットでお得に予約できます。\nどのようなご旅行をお探しでしょうか？',
-            'intent': 'greeting',
-            'confidence': 0.7,
-            'reasoning': {'fallback_response': True}
-        }
+        
+    except Exception as e:
+        # エラーが発生した場合のフォールバック（TravelChatAssistantを使用）
+        try:
+            from main.agents.assistant import TravelChatAssistant
+            fallback_assistant = TravelChatAssistant()
+            fallback_response = fallback_assistant.chat(message)
+            
+            return {
+                'content': fallback_response,
+                'intent': 'general',
+                'confidence': 0.7,
+                'reasoning': {
+                    'error': str(e),
+                    'fallback': True,
+                    'system': 'TravelChatAssistant (fallback)',
+                    'original_system': 'TravelAgentSystem'
+                }
+            }
+        except Exception as fallback_error:
+            # 最終的なフォールバック
+            return {
+                'content': '申し訳ございません。システムにエラーが発生しました。しばらくしてから再度お試しください。',
+                'intent': 'error',
+                'confidence': 1.0,
+                'reasoning': {
+                    'error': str(e),
+                    'fallback_error': str(fallback_error),
+                    'system': 'manual_fallback'
+                }
+            }
 
 
 def handle_ai_assistant(message, session):

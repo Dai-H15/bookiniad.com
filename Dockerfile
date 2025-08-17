@@ -38,4 +38,4 @@ RUN useradd --create-home --shell /bin/bash app \
 USER app
 
 # Gunicornを使用してDjangoアプリケーションを起動
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "settings.wsgi:application"]
+CMD ["uvicorn", "--bind", "0.0.0.0:8000", "settings.asgi:application"]

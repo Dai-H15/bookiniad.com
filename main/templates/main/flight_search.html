@@ -78,6 +78,15 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="flight_number" class="form-label">便名</label>
+                                <select name="flight_number" id="flight_number" class="form-select">
+                                    <option value="">すべての便名</option>
+                                    {% for fn in flight_numbers %}
+                                        <option value="{{ fn }}" {% if request.GET.flight_number == fn %}selected{% endif %}>{{ fn }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3 mb-3">

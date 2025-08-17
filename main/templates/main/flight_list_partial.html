@@ -10,6 +10,9 @@
                         {% if flight.flight_type == 'domestic' %}国内線{% else %}国際線{% endif %}
                     </span>
                 </div>
+                <p class="text-muted mb-1">
+                    <strong>便名：{{ flight.flight_number }}</strong>
+                </p>
                 <p class="text-muted mb-2">
                     <i class="fas fa-plane-departure"></i> {{ flight.place_from }} 
                     <i class="fas fa-arrow-right mx-2"></i> 
@@ -68,6 +71,7 @@
             <thead class="table-light">
                 <tr>
                     <th>航空会社</th>
+                    <th>便名</th>
                     <th>路線</th>
                     <th>出発日時</th>
                     <th>到着日時</th>
@@ -80,6 +84,7 @@
                 {% for flight in flight_list %}
                 <tr>
                     <td><strong>{{ flight.name }}</strong></td>
+                    <td><strong>{{ flight.flight_number }}</strong></td>
                     <td>
                         {{ flight.place_from }} <i class="fas fa-arrow-right"></i> {{ flight.place_to }}
                     </td>
@@ -109,7 +114,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center text-muted">
+                    <td colspan="8" class="text-center text-muted">
                         {% if flight_direction == 'return' %}
                             復路の便が見つかりませんでした。
                         {% else %}

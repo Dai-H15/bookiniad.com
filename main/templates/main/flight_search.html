@@ -22,9 +22,16 @@
                     <form method="GET" action="{% url 'flight_search' %}">
                         <div class="row">
                             <div class="col-md-2 mb-3">
-                                <label for="departure_date" class="form-label">出発日 <span class="text-danger">*</span></label>
+                                <label for="departure_date" class="form-label">出発日</label>
                                 <input type="date" name="departure_date" id="departure_date" class="form-control" 
-                                       value="{{ request.GET.departure_date }}" required>
+                                       value="{{ request.GET.departure_date }}" placeholder="未定でも検索可能">
+                                <small class="text-muted">未指定でも検索できます</small>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label for="return_date" class="form-label">復路日（任意）</label>
+                                <input type="date" name="return_date" id="return_date" class="form-control" 
+                                       value="{{ request.GET.return_date }}" placeholder="片道の場合は未入力">
+                                <small class="text-muted">往復の場合のみ</small>
                             </div>
                             <div class="col-md-2 mb-3">
                                 <label for="passengers" class="form-label">人数</label>
@@ -99,16 +106,7 @@
     </div>
 
     <!-- 検索結果 -->
-    {% if date_required_message %}
-    <div class="row">
-        <div class="col-12">
-            <div class="alert alert-warning text-center">
-                <i class="fas fa-calendar-alt"></i>
-                {{ date_required_message }}
-            </div>
-        </div>
-    </div>
-    {% elif date_error_message %}
+    {% if date_error_message %}
     <div class="row">
         <div class="col-12">
             <div class="alert alert-danger text-center">
@@ -117,11 +115,26 @@
             </div>
         </div>
     </div>
-    {% elif flights %}
+    {% elif flights or return_flights %}
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4>検索結果 ({{ flights|length }}件)</h4>
+                <div>
+                    <h4>検索結果</h4>
+                    {% if is_round_trip %}
+                        <p class="text-muted mb-0">
+                            往路: {{ outbound_count }}件、復路: {{ return_count }}件
+                        </p>
+                    {% else %}
+                        <p class="text-muted mb-0">
+                            全{{ total_results }}件中 
+                            {{ flights.start_index }}〜{{ flights.end_index }}件を表示
+                            {% if is_paginated %}
+                                ({{ flights.number }}/{{ flights.paginator.num_pages }}ページ)
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                </div>
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-outline-primary active" onclick="toggleView('card')">
                         <i class="fas fa-th-large"></i> カード表示
@@ -134,98 +147,53 @@
         </div>
     </div>
 
-    <!-- カード表示 -->
-    <div id="card-view" class="row">
-        {% for flight in flights %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 flight-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title">{{ flight.name }}</h5>
-                        <span class="badge bg-{% if flight.flight_type == 'domestic' %}primary{% else %}success{% endif %}">
-                            {% if flight.flight_type == 'domestic' %}国内線{% else %}国際線{% endif %}
-                        </span>
-                    </div>
-                    <p class="text-muted mb-2">
-                        <i class="fas fa-plane-departure"></i> {{ flight.place_from }} 
-                        <i class="fas fa-arrow-right mx-2"></i> 
-                        <i class="fas fa-plane-arrival"></i> {{ flight.place_to }}
-                    </p>
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <small class="text-muted">出発</small><br>
-                            <strong>{{ flight.departure_time|time:"H:i" }}</strong>
-                        </div>
-                        <div class="col-6">
-                            <small class="text-muted">到着</small><br>
-                            <strong>{{ flight.arrival_time|time:"H:i" }}</strong>
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="h5 text-primary">¥{{ flight.fee|floatformat:0 }}</span>
-                        </div>
-                        <button class="btn btn-primary btn-sm" onclick="selectFlight({{ flight.id }}, '{{ flight.name }}', '{{ flight.place_from }}', '{{ flight.place_to }}', '{{ flight.departure_time|time:"H:i" }}', {{ flight.fee }})">
-                            <i class="fas fa-check"></i> 選択
-                        </button>
-                    </div>
-                </div>
-            </div>
+    {% if is_round_trip %}
+    <!-- 往復検索の場合のタブ表示 -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="flightTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="outbound-tab" data-bs-toggle="tab" data-bs-target="#outbound" type="button" role="tab">
+                        <i class="fas fa-plane-departure"></i> 往路 ({{ outbound_count }}件)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="return-tab" data-bs-toggle="tab" data-bs-target="#return" type="button" role="tab">
+                        <i class="fas fa-plane-arrival"></i> 復路 ({{ return_count }}件)
+                    </button>
+                </li>
+            </ul>
         </div>
-        {% endfor %}
     </div>
 
-    <!-- リスト表示 -->
-    <div id="list-view" class="d-none">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>航空会社</th>
-                        <th>路線</th>
-                        <th>出発時刻</th>
-                        <th>到着時刻</th>
-                        <th>種別</th>
-                        <th>価格</th>
-                        <th>アクション</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for flight in flights %}
-                    <tr>
-                        <td><strong>{{ flight.name }}</strong></td>
-                        <td>
-                            {{ flight.place_from }} <i class="fas fa-arrow-right"></i> {{ flight.place_to }}
-                        </td>
-                        <td>{{ flight.departure_time|time:"H:i" }}</td>
-                        <td>{{ flight.arrival_time|time:"H:i" }}</td>
-                        <td>
-                            <span class="badge bg-{% if flight.flight_type == 'domestic' %}primary{% else %}success{% endif %}">
-                                {% if flight.flight_type == 'domestic' %}国内線{% else %}国際線{% endif %}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="text-primary fw-bold">¥{{ flight.fee|floatformat:0 }}</span>
-                        </td>
-                        <td>
-                            <button class="btn btn-primary btn-sm" onclick="selectFlight({{ flight.id }}, '{{ flight.name }}', '{{ flight.place_from }}', '{{ flight.place_to }}', '{{ flight.departure_time|time:"H:i" }}', {{ flight.fee }})">
-                                <i class="fas fa-check"></i> 選択
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="tab-content" id="flightTabContent">
+        <!-- 往路タブ -->
+        <div class="tab-pane fade show active" id="outbound" role="tabpanel">
+            {% include 'main/flight_list_partial.html' with flight_list=flights flight_direction='outbound' %}
+        </div>
+        
+        <!-- 復路タブ -->
+        <div class="tab-pane fade" id="return" role="tabpanel">
+            {% include 'main/flight_list_partial.html' with flight_list=return_flights flight_direction='return' %}
         </div>
     </div>
+    {% else %}
+    <!-- 片道検索の場合は直接表示 -->
+
+    <!-- 片道検索の場合は直接表示 -->
+    {% include 'main/flight_list_partial.html' with flight_list=flights flight_direction='outbound' %}
+    {% endif %}
 
     {% else %}
     <div class="row">
         <div class="col-12">
             <div class="alert alert-info text-center">
                 <i class="fas fa-info-circle"></i>
-                条件に合う航空券が見つかりませんでした。検索条件を変更してお試しください。
+                {% if total_results == 0 and not date_error_message %}
+                    条件に合う航空券が見つかりませんでした。検索条件を変更してお試しください。
+                {% else %}
+                    検索条件を指定して航空券を検索してください。
+                {% endif %}
             </div>
         </div>
     </div>
@@ -239,73 +207,67 @@
                 <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">前へ</a>
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" aria-label="最初のページ">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" aria-label="前のページ">
+                                <i class="fas fa-angle-left"></i> 前へ
+                            </a>
                         </li>
                     {% endif %}
                     
                     {% for num in page_obj.paginator.page_range %}
                         {% if page_obj.number == num %}
-                            <li class="page-item active">
+                            <li class="page-item active" aria-current="page">
                                 <span class="page-link">{{ num }}</span>
                             </li>
-                        {% else %}
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                             <li class="page-item">
                                 <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% elif num == page_obj.number|add:'-4' or num == page_obj.number|add:'4' %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
                             </li>
                         {% endif %}
                     {% endfor %}
                     
                     {% if page_obj.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">次へ</a>
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" aria-label="次のページ">
+                                次へ <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}" aria-label="最後のページ">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
             </nav>
+            
+            <!-- ページ情報表示 -->
+            <div class="text-center mt-2">
+                <small class="text-muted">
+                    ページ {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 
+                    (全{{ total_results }}件の結果)
+                </small>
+            </div>
         </div>
     </div>
     {% endif %}
-
-    <!-- 選択状況表示 -->
-    <div id="selection-status" class="row mt-4 d-none">
-        <div class="col-12">
-            <div class="alert alert-success">
-                <h6><i class="fas fa-check-circle"></i> 現在の選択状況</h6>
-                <div id="accommodation-status"></div>
-                <div id="flight-status"></div>
-                <div class="mt-2">
-                    <a href="{% url 'create_booking' %}" class="btn btn-success">
-                        <i class="fas fa-calendar-check"></i> 予約を確定する
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 選択モーダル -->
-<div class="modal fade" id="selectionModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">航空券を選択しました</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p id="selection-info"></p>
-                <div id="next-action"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
-                <div id="modal-actions"></div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
 function toggleView(viewType) {
-    const cardView = document.getElementById('card-view');
+    const cardView = document.getElementById('flight-list');
     const listView = document.getElementById('list-view');
     const buttons = document.querySelectorAll('.btn-group button');
     
@@ -322,79 +284,57 @@ function toggleView(viewType) {
     }
 }
 
-function selectFlight(id, airline, departure, destination, departureTime, price) {
-    // 現在選択されている出発日を取得
-    const selectedDepartureDate = document.getElementById('departure_date').value;
-    
-    // セッションストレージに保存
-    sessionStorage.setItem('selectedFlight', JSON.stringify({
-        id: id,
-        airline: airline,
-        departure: departure,
-        destination: destination,
-        departureTime: departureTime,
-        price: price,
-        departure_date: selectedDepartureDate
-    }));
-    
-    // モーダルに情報を設定
-    document.getElementById('selection-info').innerHTML = 
-        `<strong>${airline}</strong><br>${departure} → ${destination} (${departureTime}出発)<br>¥${price.toLocaleString()} を選択しました。`;
-    
-    // 次のアクションを設定
-    const selectedAccommodation = sessionStorage.getItem('selectedAccommodation');
-    if (selectedAccommodation) {
-        document.getElementById('next-action').innerHTML = 
-            '<p class="text-success"><i class="fas fa-check"></i> 宿泊施設と航空券の両方が選択されています。予約を確定できます。</p>';
-        document.getElementById('modal-actions').innerHTML = 
-            '<a href="{% url "create_booking" %}" class="btn btn-success"><i class="fas fa-calendar-check"></i> 予約を確定する</a>';
-    } else {
-        document.getElementById('next-action').innerHTML = 
-            '<p>宿泊施設もお選びいただけます。</p>';
-        document.getElementById('modal-actions').innerHTML = 
-            '<a href="{% url "accommodation_search" %}" class="btn btn-primary">宿泊施設を選択</a>';
-    }
-    
-    // モーダルを表示
-    const modal = new bootstrap.Modal(document.getElementById('selectionModal'));
-    modal.show();
-    
-    // 選択状況を更新
-    updateSelectionStatus();
+// カートに航空券を追加
+function addToCart(flightId, direction) {
+    fetch('{% url "add_flight_to_cart" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            flight_id: flightId,
+            direction: direction
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 成功メッセージを表示
+            showToast(data.message, 'success');
+        } else {
+            showToast(data.error, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('カートへの追加中にエラーが発生しました', 'danger');
+    });
 }
 
-function updateSelectionStatus() {
-    const selectedAccommodation = sessionStorage.getItem('selectedAccommodation');
-    const selectedFlight = sessionStorage.getItem('selectedFlight');
-    const statusDiv = document.getElementById('selection-status');
-    
-    if (selectedAccommodation || selectedFlight) {
-        statusDiv.classList.remove('d-none');
-        
-        if (selectedAccommodation) {
-            const accData = JSON.parse(selectedAccommodation);
-            document.getElementById('accommodation-status').innerHTML = 
-                `<strong>宿泊施設:</strong> ${accData.name} (¥${accData.price.toLocaleString()}/泊)`;
-        }
-        
-        if (selectedFlight) {
-            const flightData = JSON.parse(selectedFlight);
-            document.getElementById('flight-status').innerHTML = 
-                `<strong>航空券:</strong> ${flightData.airline} ${flightData.departure}→${flightData.destination} (¥${flightData.price.toLocaleString()})`;
-        }
-    }
-}
-
-// ページ読み込み時に選択状態を確認
+// ページ読み込み時の初期化
 document.addEventListener('DOMContentLoaded', function() {
-    updateSelectionStatus();
-    
     // 日付フィールドに今日以降の日付制限を設定
     const today = new Date().toISOString().split('T')[0];
     const departureDateField = document.getElementById('departure_date');
+    const returnDateField = document.getElementById('return_date');
     
     if (departureDateField) {
         departureDateField.setAttribute('min', today);
+        
+        // 出発日が変更されたら復路日の最小日付を更新
+        departureDateField.addEventListener('change', function() {
+            if (returnDateField && this.value) {
+                returnDateField.setAttribute('min', this.value);
+                // 復路日が出発日より前の場合はクリア
+                if (returnDateField.value && returnDateField.value < this.value) {
+                    returnDateField.value = '';
+                }
+            }
+        });
+    }
+    
+    if (returnDateField) {
+        returnDateField.setAttribute('min', today);
     }
 });
 </script>

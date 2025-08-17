@@ -6,7 +6,7 @@
 <!-- ヒーローセクション -->
 <section class="hero-section text-center">
     <div class="container">
-        <h1 class="display-4 mb-4">AIエージェント比較体験</h1>
+        <h1 class="display-4 mb-4">bookiniad.com で お得に旅行しましょう</h1>
         <p class="lead mb-4">3つの異なるAIシステムで旅行予約を体験してみましょう</p>
         
         <!-- 検索タブ -->
@@ -24,6 +24,9 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="flight-tab" data-bs-toggle="tab" data-bs-target="#flight" type="button" role="tab">航空券検索</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="inquiry-tab" data-bs-toggle="tab" data-bs-target="#inquiry" type="button" role="tab">予約照会</button>
                             </li>
                         </ul>
                         
@@ -149,6 +152,36 @@
                                     </div>
                                 </form>
                             </div>
+                            
+                            <!-- 予約照会 -->
+                            <div class="tab-pane fade" id="inquiry" role="tabpanel">
+                                <h5 class="card-title mt-3">予約を照会</h5>
+                                <form method="POST" action="{% url 'booking_inquiry' %}">
+                                    {% csrf_token %}
+                                    <div class="row g-3">
+                                        <div class="col-md-8">
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   name="reservation_number"
+                                                   placeholder="予約番号を入力してください"
+                                                   required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-warning btn-lg w-100">
+                                                <i class="fas fa-search"></i> 予約照会
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <small class="text-muted">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                予約完了時にお送りしたメールに記載されている予約番号を入力してください
+                                            </small>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -233,11 +266,24 @@
                         <p class="card-text">{{ package.description|truncatewords:15 }}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="h5 text-primary">¥{{ package.total_price|floatformat:0 }}</span>
-                            <small class="text-muted">{{ package.stay_duration }}泊</small>
+                            <div class="text-end">
+                                <small class="text-muted d-block">{{ package.stay_duration }}泊</small>
+                                {% if not package.is_available %}
+                                    <small class="text-danger">
+                                        <i class="fas fa-exclamation-triangle"></i> 完売
+                                    </small>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <button class="btn btn-outline-primary btn-sm">詳細を見る</button>
+                        {% if package.is_available %}
+                            <button class="btn btn-outline-primary btn-sm">詳細を見る</button>
+                        {% else %}
+                            <button class="btn btn-outline-danger btn-sm" disabled>
+                                <i class="fas fa-ban"></i> 完売
+                            </button>
+                        {% endif %}
                     </div>
                 </div>
             </div>

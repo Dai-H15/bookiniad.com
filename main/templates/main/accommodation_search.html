@@ -144,7 +144,18 @@
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4>検索結果 ({{ accommodations|length }}件)</h4>
+                <div>
+                    <h4>検索結果</h4>
+                    {% if total_results %}
+                        <p class="text-muted mb-0">
+                            全{{ total_results }}件中 
+                            {{ accommodations.start_index }}〜{{ accommodations.end_index }}件を表示
+                            {% if is_paginated %}
+                                ({{ accommodations.number }}/{{ accommodations.paginator.num_pages }}ページ)
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                </div>
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-outline-primary active" onclick="toggleView('card')">
                         <i class="fas fa-th-large"></i> カード表示
@@ -201,11 +212,16 @@
                                 <br><span class="badge bg-danger mt-1">空室なし</span>
                             {% endif %}
                         </div>
-                        <button class="btn btn-primary btn-sm" 
-                                onclick="selectAccommodation({{ accommodation.id }}, '{{ accommodation.name }}', {{ accommodation.price_per_night }}, '{{ request.GET.checkin_date }}', '{{ request.GET.checkout_date }}', '{{ request.GET.guests }}')"
-                                {% if not accommodation.available_for_dates %}disabled{% endif %}>
-                            <i class="fas fa-check"></i> 選択
-                        </button>
+                        <div>
+                            <div class="btn-group">
+                                <button class="btn btn-primary btn-sm" 
+                                        onclick="addAccommodationToCart({{ accommodation.id }})"
+                                        {% if not accommodation.available_for_dates %}disabled{% endif %}
+                                        title="カートに追加">
+                                    <i class="fas fa-cart-plus"></i> カートに追加
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -265,11 +281,14 @@
                             {% endif %}
                         </td>
                         <td>
-                            <button class="btn btn-primary btn-sm" 
-                                    onclick="selectAccommodation({{ accommodation.id }}, '{{ accommodation.name }}', {{ accommodation.price_per_night }}, '{{ request.GET.checkin_date }}', '{{ request.GET.checkout_date }}', '{{ request.GET.guests }}')"
-                                    {% if not accommodation.available_for_dates %}disabled{% endif %}>
-                                <i class="fas fa-check"></i> 選択
-                            </button>
+                            <div class="btn-group">
+                                <button class="btn btn-primary btn-sm" 
+                                        onclick="addAccommodationToCart({{ accommodation.id }})"
+                                        {% if not accommodation.available_for_dates %}disabled{% endif %}
+                                        title="カートに追加">
+                                    <i class="fas fa-cart-plus"></i> カートに追加
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -283,7 +302,11 @@
         <div class="col-12">
             <div class="alert alert-info text-center">
                 <i class="fas fa-info-circle"></i>
-                条件に合う宿泊施設が見つかりませんでした。検索条件を変更してお試しください。
+                {% if total_results == 0 and not date_required_message and not date_error_message %}
+                    条件に合う宿泊施設が見つかりませんでした。検索条件を変更してお試しください。
+                {% else %}
+                    検索条件を指定して宿泊施設を検索してください。
+                {% endif %}
             </div>
         </div>
     </div>
@@ -297,49 +320,149 @@
                 <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">前へ</a>
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" aria-label="最初のページ">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" aria-label="前のページ">
+                                <i class="fas fa-angle-left"></i> 前へ
+                            </a>
                         </li>
                     {% endif %}
                     
                     {% for num in page_obj.paginator.page_range %}
                         {% if page_obj.number == num %}
-                            <li class="page-item active">
+                            <li class="page-item active" aria-current="page">
                                 <span class="page-link">{{ num }}</span>
                             </li>
-                        {% else %}
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                             <li class="page-item">
                                 <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% elif num == page_obj.number|add:'-4' or num == page_obj.number|add:'4' %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
                             </li>
                         {% endif %}
                     {% endfor %}
                     
                     {% if page_obj.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">次へ</a>
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" aria-label="次のページ">
+                                次へ <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}" aria-label="最後のページ">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
             </nav>
+            
+            <!-- ページ情報表示 -->
+            <div class="text-center mt-2">
+                <small class="text-muted">
+                    ページ {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 
+                    (全{{ total_results }}件の結果)
+                </small>
+            </div>
         </div>
     </div>
     {% endif %}
 </div>
 
-<!-- 選択モーダル -->
-<div class="modal fade" id="selectionModal" tabindex="-1">
-    <div class="modal-dialog">
+<!-- 航空券おすすめモーダル -->
+<div class="modal fade" id="flightRecommendationModal" tabindex="-1" aria-labelledby="flightRecommendationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">宿泊施設を選択しました</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="flightRecommendationModalLabel">
+                    <i class="fas fa-plane"></i> 航空券のご提案
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p id="selection-info"></p>
-                <p>次に航空券を選択しますか？</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong id="accommodation-destination"></strong>での宿泊が決まりました！<br>
+                    次に、航空券はいかがですか？お得な便をご提案いたします。
+                </div>
+                
+                <!-- 航空券検索エリア -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-search"></i> 航空券を検索</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="modal-departure" class="form-label">出発地</label>
+                                <select class="form-select" id="modal-departure">
+                                    <option value="">選択してください</option>
+                                    <option value="東京">東京</option>
+                                    <option value="大阪">大阪</option>
+                                    <option value="名古屋">名古屋</option>
+                                    <option value="福岡">福岡</option>
+                                    <option value="札幌">札幌</option>
+                                    <option value="沖縄">沖縄</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="modal-destination" class="form-label">目的地</label>
+                                <input type="text" class="form-control" id="modal-destination" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="modal-departure-date" class="form-label">出発日</label>
+                                <input type="date" class="form-control" id="modal-departure-date" readonly>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-primary w-100" onclick="searchRecommendedFlights()">
+                                    <i class="fas fa-search"></i> 検索
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 検索結果エリア -->
+                <div id="flight-search-results" class="d-none">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fas fa-plane-departure"></i> おすすめ航空券</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="flight-results-container">
+                                <!-- 航空券検索結果がここに表示される -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ローディング状態 -->
+                <div id="flight-search-loading" class="d-none text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">検索中...</span>
+                    </div>
+                    <p class="mt-2">航空券を検索しています...</p>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">とりあえず閉じる</button>
-                <a href="{% url 'flight_search' %}" class="btn btn-primary">航空券を選択</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> 航空券は後で検索
+                </button>
+                <a href="{% url 'cart' %}" class="btn btn-success">
+                    <i class="fas fa-shopping-cart"></i> カートを確認
+                </a>
+                <a href="{% url 'flight_search' %}" class="btn btn-primary">
+                    <i class="fas fa-external-link-alt"></i> 航空券検索ページへ
+                </a>
             </div>
         </div>
     </div>
@@ -362,34 +485,6 @@ function toggleView(viewType) {
         listView.classList.remove('d-none');
         buttons[1].classList.add('active');
     }
-}
-
-function selectAccommodation(id, name, price, checkinDate, checkoutDate, guests) {
-    // セッションストレージに保存
-    sessionStorage.setItem('selectedAccommodation', JSON.stringify({
-        id: id,
-        name: name,
-        price: price,
-        checkin_date: checkinDate,
-        checkout_date: checkoutDate,
-        guests: guests
-    }));
-    
-    // モーダルに情報を設定
-    const nights = checkinDate && checkoutDate ? 
-        Math.ceil((new Date(checkoutDate) - new Date(checkinDate)) / (1000 * 60 * 60 * 24)) : 1;
-    const totalPrice = price * nights;
-    
-    document.getElementById('selection-info').innerHTML = 
-        `<strong>${name}</strong><br>
-         チェックイン: ${checkinDate || '未設定'}<br>
-         チェックアウト: ${checkoutDate || '未設定'}<br>
-         宿泊人数: ${guests || '1'}名<br>
-         料金: ¥${price.toLocaleString()}/泊 × ${nights}泊 = ¥${totalPrice.toLocaleString()}`;
-    
-    // モーダルを表示
-    const modal = new bootstrap.Modal(document.getElementById('selectionModal'));
-    modal.show();
 }
 
 // ページ読み込み時に選択状態を確認
@@ -423,5 +518,193 @@ document.addEventListener('DOMContentLoaded', function() {
         // 選択状態を視覚的に表示する場合はここに追加
     }
 });
+
+// カートに宿泊施設を追加
+function addAccommodationToCart(accommodationId) {
+    const checkinDate = document.getElementById('checkin_date').value;
+    const checkoutDate = document.getElementById('checkout_date').value;
+    
+    if (!checkinDate || !checkoutDate) {
+        alert('チェックイン日とチェックアウト日を選択してください。');
+        return;
+    }
+    
+    fetch('{% url "add_accommodation_to_cart" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            accommodation_id: accommodationId,
+            checkin_date: checkinDate,
+            checkout_date: checkoutDate
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 成功メッセージを表示
+            showToast(data.message, 'success');
+            
+            // 航空券おすすめモーダルを表示
+            showFlightRecommendationModal(data.accommodation, checkinDate, checkoutDate);
+        } else {
+            showToast(data.error, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('カートへの追加中にエラーが発生しました', 'danger');
+    });
+}
+
+// 航空券おすすめモーダルを表示
+function showFlightRecommendationModal(accommodation, checkinDate, checkoutDate) {
+    // 宿泊施設の場所を目的地として設定
+    document.getElementById('accommodation-destination').textContent = accommodation.location;
+    document.getElementById('modal-destination').value = accommodation.location;
+    document.getElementById('modal-departure-date').value = checkinDate;
+    
+    // 目的地に応じた出発地の推奨設定
+    const destinationToRecommendedDeparture = {
+        '東京': '大阪',
+        '大阪': '東京', 
+        '沖縄': '東京',
+        '北海道': '東京',
+        '札幌': '東京',
+        '福岡': '東京',
+        '京都': '東京',
+        '名古屋': '東京'
+    };
+    
+    const recommendedDeparture = destinationToRecommendedDeparture[accommodation.location] || '東京';
+    const departureSelect = document.getElementById('modal-departure');
+    
+    // 推奨出発地を選択
+    for (let option of departureSelect.options) {
+        if (option.value === recommendedDeparture) {
+            option.selected = true;
+            break;
+        }
+    }
+    
+    // 検索結果をリセット
+    document.getElementById('flight-search-results').classList.add('d-none');
+    document.getElementById('flight-search-loading').classList.add('d-none');
+    
+    // モーダルを表示
+    const modal = new bootstrap.Modal(document.getElementById('flightRecommendationModal'));
+    modal.show();
+    
+    // モーダル表示後に自動検索を実行
+    setTimeout(() => {
+        if (recommendedDeparture) {
+            searchRecommendedFlights();
+        }
+    }, 500);
+}
+
+// おすすめ航空券を検索
+function searchRecommendedFlights() {
+    const departure = document.getElementById('modal-departure').value;
+    const destination = document.getElementById('modal-destination').value;
+    const departureDate = document.getElementById('modal-departure-date').value;
+    
+    if (!departure) {
+        alert('出発地を選択してください。');
+        return;
+    }
+    
+    // ローディング表示
+    document.getElementById('flight-search-loading').classList.remove('d-none');
+    document.getElementById('flight-search-results').classList.add('d-none');
+    
+    // 航空券検索API呼び出し
+    fetch('{% url "flight_search" %}?' + new URLSearchParams({
+        departure: departure,
+        destination: destination,
+        departure_date: departureDate,
+        modal: 'true'
+    }))
+    .then(response => response.text())
+    .then(html => {
+        // ローディング非表示
+        document.getElementById('flight-search-loading').classList.add('d-none');
+        
+        // HTMLからフライトリストを抽出
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const flightList = doc.querySelector('#flight-list');
+        
+        if (flightList && flightList.children.length > 0) {
+            // 結果を表示
+            let flightHtml = flightList.innerHTML;
+            
+            // モーダル内での航空券追加機能のために、JavaScriptを調整
+            flightHtml = flightHtml.replace(/onclick="addToCart\(/g, 'onclick="addFlightToCartFromModal(');
+            
+            document.getElementById('flight-results-container').innerHTML = flightHtml;
+            document.getElementById('flight-search-results').classList.remove('d-none');
+        } else {
+            // 結果なしの場合
+            document.getElementById('flight-results-container').innerHTML = `
+                <div class="alert alert-warning text-center">
+                    <i class="fas fa-plane"></i>
+                    条件に合う航空券が見つかりませんでした。<br>
+                    <small>出発地を変更するか、航空券検索ページで詳細な検索をお試しください。</small>
+                </div>
+            `;
+            document.getElementById('flight-search-results').classList.remove('d-none');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('flight-search-loading').classList.add('d-none');
+        document.getElementById('flight-results-container').innerHTML = `
+            <div class="alert alert-danger text-center">
+                <i class="fas fa-exclamation-triangle"></i>
+                航空券検索中にエラーが発生しました。しばらく後にお試しください。
+            </div>
+        `;
+        document.getElementById('flight-search-results').classList.remove('d-none');
+    });
+}
+
+// モーダル内で航空券をカートに追加
+function addFlightToCartFromModal(flightId, direction = 'oneway') {
+    fetch('{% url "add_flight_to_cart" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            flight_id: flightId,
+            direction: direction
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message, 'success');
+            
+            // モーダルを閉じる
+            const modal = bootstrap.Modal.getInstance(document.getElementById('flightRecommendationModal'));
+            modal.hide();
+            
+            // カートページへのリンクを表示するか選択肢を提示
+            setTimeout(() => {
+                if (confirm('航空券をカートに追加しました。カートを確認しますか？')) {
+                    window.location.href = '{% url "cart" %}';
+                }
+            }, 500);
+        } else {
+            showToast(data.error, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('カートへの追加中にエラーが発生しました', 'danger');
+    });
+}
 </script>
 {% endblock %}

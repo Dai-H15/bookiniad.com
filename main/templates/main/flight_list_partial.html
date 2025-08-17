@@ -1,0 +1,124 @@
+<!-- カード表示 -->
+<div id="flight-list" class="row">
+    {% for flight in flight_list %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 flight-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title">{{ flight.name }}</h5>
+                    <span class="badge bg-{% if flight.flight_type == 'domestic' %}primary{% else %}success{% endif %}">
+                        {% if flight.flight_type == 'domestic' %}国内線{% else %}国際線{% endif %}
+                    </span>
+                </div>
+                <p class="text-muted mb-2">
+                    <i class="fas fa-plane-departure"></i> {{ flight.place_from }} 
+                    <i class="fas fa-arrow-right mx-2"></i> 
+                    <i class="fas fa-plane-arrival"></i> {{ flight.place_to }}
+                </p>
+                <p class="text-muted mb-2 small">
+                    <i class="fas fa-calendar"></i> {{ flight.departure_time|date:"Y年n月j日" }}
+                    {% if flight.departure_time|date:"Y-m-d" != flight.arrival_time|date:"Y-m-d" %}
+                        → {{ flight.arrival_time|date:"Y年n月j日" }}
+                    {% endif %}
+                </p>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">出発</small><br>
+                        <strong>{{ flight.departure_time|date:"m/d" }}</strong><br>
+                        <strong>{{ flight.departure_time|time:"H:i" }}</strong>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">到着</small><br>
+                        <strong>{{ flight.arrival_time|date:"m/d" }}</strong><br>
+                        <strong>{{ flight.arrival_time|time:"H:i" }}</strong>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="h5 text-primary">¥{{ flight.fee|floatformat:0 }}</span>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-sm" onclick="addToCart({{ flight.id }}, '{{ flight_direction }}')" title="カートに追加">
+                            <i class="fas fa-cart-plus"></i> カートに追加
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <i class="fas fa-search"></i>
+            {% if flight_direction == 'return' %}
+                復路の便が見つかりませんでした。
+            {% else %}
+                条件に合う航空券が見つかりませんでした。検索条件を変更してお試しください。
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- リスト表示 -->
+<div id="list-view" class="d-none">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>航空会社</th>
+                    <th>路線</th>
+                    <th>出発日時</th>
+                    <th>到着日時</th>
+                    <th>種別</th>
+                    <th>価格</th>
+                    <th>アクション</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for flight in flight_list %}
+                <tr>
+                    <td><strong>{{ flight.name }}</strong></td>
+                    <td>
+                        {{ flight.place_from }} <i class="fas fa-arrow-right"></i> {{ flight.place_to }}
+                    </td>
+                    <td>
+                        <div>{{ flight.departure_time|date:"m/d" }}</div>
+                        <div>{{ flight.departure_time|time:"H:i" }}</div>
+                    </td>
+                    <td>
+                        <div>{{ flight.arrival_time|date:"m/d" }}</div>
+                        <div>{{ flight.arrival_time|time:"H:i" }}</div>
+                    </td>
+                    <td>
+                        <span class="badge bg-{% if flight.flight_type == 'domestic' %}primary{% else %}success{% endif %}">
+                            {% if flight.flight_type == 'domestic' %}国内線{% else %}国際線{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="text-primary fw-bold">¥{{ flight.fee|floatformat:0 }}</span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-sm" onclick="addToCart({{ flight.id }}, '{{ flight_direction }}')" title="カートに追加">
+                                <i class="fas fa-cart-plus"></i> カートに追加
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        {% if flight_direction == 'return' %}
+                            復路の便が見つかりませんでした。
+                        {% else %}
+                            条件に合う航空券が見つかりませんでした。検索条件を変更してお試しください。
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

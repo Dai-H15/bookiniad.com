@@ -89,10 +89,21 @@
                         </ul>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'booking_inquiry' %}">予約照会</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'ai_comparison' %}">AI比較</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'performance_analysis' %}">パフォーマンス分析</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{% url 'cart' %}">
+                            <i class="fas fa-shopping-cart"></i> カート
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count" style="display: none;">
+                                0
+                            </span>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -127,6 +138,70 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // カート数を取得・更新する関数
+        function updateCartCount() {
+            fetch('/cart/')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const cartCountElement = doc.querySelector('.cart-header p');
+                    
+                    if (cartCountElement) {
+                        const text = cartCountElement.textContent;
+                        const count = parseInt(text.match(/(\d+)点/) ? text.match(/(\d+)点/)[1] : 0);
+                        
+                        const cartBadge = document.querySelector('.cart-count');
+                        if (cartBadge) {
+                            cartBadge.textContent = count;
+                            cartBadge.style.display = count > 0 ? 'inline' : 'none';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating cart count:', error);
+                });
+        }
+
+        // ページ読み込み時にカート数を更新
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+        });
+
+        // カートに追加時のトースト表示
+        function showToast(message, type = 'success') {
+            // 既存のトーストを削除
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // トーストHTML作成
+            const toastHtml = `
+                <div class="toast position-fixed top-0 end-0 m-3" style="z-index: 9999;" role="alert">
+                    <div class="toast-header">
+                        <i class="fas fa-${type === 'success' ? 'check-circle text-success' : 'exclamation-triangle text-warning'} me-2"></i>
+                        <strong class="me-auto">お知らせ</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+
+            // トーストを追加
+            document.body.insertAdjacentHTML('beforeend', toastHtml);
+            
+            // トーストを表示
+            const toast = new bootstrap.Toast(document.querySelector('.toast:last-child'));
+            toast.show();
+
+            // トーストが表示された後にカート数を更新
+            setTimeout(updateCartCount, 500);
+        }
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

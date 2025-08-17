@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 # Create your models here.
 
@@ -132,12 +133,13 @@ class FlightAvailability(models.Model):
 
 # 予約を管理するモデル
 class Booking(models.Model):
-    reservation_number = models.AutoField(
+    reservation_number = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
         unique=True,
-        null=False,
         help_text="予約番号",
-        verbose_name="予約番号",
-        primary_key=True
+        verbose_name="予約番号"
     )
     from_date = models.DateTimeField(
         blank=False,
@@ -412,3 +414,141 @@ class SystemResponse(models.Model):
     timestamp = models.DateTimeField(
         auto_now_add=True
     )
+
+
+# ショッピングカート機能
+class Cart(models.Model):
+    session_id = models.CharField(
+        max_length=100,
+        verbose_name="セッションID"
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="作成日時"
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="更新日時"
+    )
+    
+    def get_total_price(self):
+        """カート内の総額を計算"""
+        total = 0
+        for item in self.items.all():
+            total += item.get_total_price()
+        return total
+    
+    def get_flight_count(self):
+        """カート内の航空券数を取得"""
+        return self.items.filter(item_type='flight').count()
+    
+    def get_accommodation_count(self):
+        """カート内の宿泊施設数を取得"""
+        return self.items.filter(item_type='accommodation').count()
+
+
+# カートアイテム
+class CartItem(models.Model):
+    ITEM_TYPES = [
+        ('flight', '航空券'),
+        ('accommodation', '宿泊施設'),
+        ('package', 'パッケージ'),
+    ]
+    
+    FLIGHT_DIRECTION = [
+        ('outbound', '往路'),
+        ('return', '復路'),
+        ('oneway', '片道'),
+    ]
+    
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.CASCADE,
+        related_name='items',
+        verbose_name="カート"
+    )
+    item_type = models.CharField(
+        max_length=20,
+        choices=ITEM_TYPES,
+        verbose_name="アイテムタイプ"
+    )
+    
+    # 航空券関連
+    flight = models.ForeignKey(
+        Air,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name="航空券"
+    )
+    flight_direction = models.CharField(
+        max_length=20,
+        choices=FLIGHT_DIRECTION,
+        null=True,
+        blank=True,
+        verbose_name="航空券方向"
+    )
+    
+    # 宿泊施設関連
+    accommodation = models.ForeignKey(
+        Accommodations,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name="宿泊施設"
+    )
+    check_in_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="チェックイン日"
+    )
+    check_out_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="チェックアウト日"
+    )
+    
+    # パッケージ関連
+    package = models.ForeignKey(
+        TravelPackage,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name="旅行パッケージ"
+    )
+    
+    # 共通
+    quantity = models.IntegerField(
+        default=1,
+        verbose_name="数量"
+    )
+    unit_price = models.IntegerField(
+        verbose_name="単価"
+    )
+    added_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="追加日時"
+    )
+    
+    def get_total_price(self):
+        """アイテムの総額を計算"""
+        if self.item_type == 'accommodation' and self.check_in_date and self.check_out_date:
+            # 宿泊日数を計算
+            nights = (self.check_out_date - self.check_in_date).days
+            return self.unit_price * nights * self.quantity
+        return self.unit_price * self.quantity
+    
+    def get_nights(self):
+        """宿泊日数を計算"""
+        if self.item_type == 'accommodation' and self.check_in_date and self.check_out_date:
+            return (self.check_out_date - self.check_in_date).days
+        return 0
+    
+    def __str__(self):
+        if self.item_type == 'flight' and self.flight:
+            return f"{self.flight.name} ({self.flight_direction})"
+        elif self.item_type == 'accommodation' and self.accommodation:
+            return f"{self.accommodation.name} ({self.get_nights()}泊)"
+        elif self.item_type == 'package' and self.package:
+            return f"{self.package.name}"
+        return f"カートアイテム {self.id}"

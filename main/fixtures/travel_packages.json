@@ -10,7 +10,7 @@
       "return_flight": 5,
       "accommodation": 2,
       "stay_duration": 2,
-      "is_available": true
+      "is_available": false
     }
   },
   {
@@ -24,7 +24,7 @@
       "return_flight": 6,
       "accommodation": 3,
       "stay_duration": 3,
-      "is_available": true
+      "is_available": false
     }
   },
   {
@@ -38,7 +38,7 @@
       "return_flight": 7,
       "accommodation": 4,
       "stay_duration": 2,
-      "is_available": true
+      "is_available": false
     }
   },
   {
@@ -52,7 +52,7 @@
       "return_flight": 8,
       "accommodation": 6,
       "stay_duration": 2,
-      "is_available": true
+      "is_available": false
     }
   },
   {
@@ -66,7 +66,7 @@
       "return_flight": null,
       "accommodation": 1,
       "stay_duration": 2,
-      "is_available": true
+      "is_available": false
     }
   },
   {
@@ -80,7 +80,7 @@
       "return_flight": null,
       "accommodation": 5,
       "stay_duration": 3,
-      "is_available": true
+      "is_available": false
     }
   },
   {
@@ -94,7 +94,7 @@
       "return_flight": 10,
       "accommodation": 1,
       "stay_duration": 2,
-      "is_available": true
+      "is_available": false
     }
   },
   {

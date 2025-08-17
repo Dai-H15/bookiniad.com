@@ -1,0 +1,293 @@
+{% extends 'main/base.html' %}
+
+{% block title %}予約完了 - {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- 予約完了メッセージ -->
+            <div class="text-center mb-5">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                </div>
+                <h1 class="h2 text-success mb-3">予約が完了しました！</h1>
+                <p class="lead text-muted">ご予約ありがとうございます。確認メールをお送りしましたのでご確認ください。</p>
+            </div>
+
+            <!-- 予約詳細情報 -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-ticket-alt"></i> 予約詳細
+                        <span class="badge bg-light text-dark ms-2" id="booking-number"></span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- 予約者情報 -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-primary"><i class="fas fa-user"></i> 予約者情報</h6>
+                            <table class="table table-borderless table-sm">
+                                <tr><td><strong>お名前:</strong></td><td id="booking-name"></td></tr>
+                                <tr><td><strong>メールアドレス:</strong></td><td id="booking-email"></td></tr>
+                                <tr><td><strong>電話番号:</strong></td><td id="booking-phone"></td></tr>
+                                <tr><td><strong>宿泊人数:</strong></td><td id="booking-guests"></td></tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary"><i class="fas fa-calendar"></i> 予約日時</h6>
+                            <table class="table table-borderless table-sm">
+                                <tr><td><strong>予約日時:</strong></td><td id="booking-created"></td></tr>
+                                <tr><td><strong>チェックイン:</strong></td><td id="booking-checkin"></td></tr>
+                                <tr><td><strong>チェックアウト:</strong></td><td id="booking-checkout"></td></tr>
+                                <tr><td><strong>宿泊日数:</strong></td><td id="booking-nights"></td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 宿泊施設情報 -->
+                    <div id="booking-accommodation-section" class="mb-4" style="display: none;">
+                        <h6 class="text-primary"><i class="fas fa-bed"></i> 宿泊施設</h6>
+                        <div class="card border-primary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="card-title" id="booking-accommodation-name"></h6>
+                                        <p class="card-text text-muted" id="booking-accommodation-location"></p>
+                                        <p class="card-text" id="booking-accommodation-details"></p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <h5 class="text-primary" id="booking-accommodation-price"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 航空券情報 -->
+                    <div id="booking-flight-section" class="mb-4" style="display: none;">
+                        <h6 class="text-primary"><i class="fas fa-plane"></i> 航空券</h6>
+                        <div class="card border-info">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="card-title" id="booking-flight-airline"></h6>
+                                        <p class="card-text" id="booking-flight-route"></p>
+                                        <p class="card-text text-muted" id="booking-flight-schedule"></p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <h5 class="text-info" id="booking-flight-price"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 料金詳細 -->
+                    <div class="row">
+                        <div class="col-md-8 offset-md-4">
+                            <h6 class="text-primary"><i class="fas fa-calculator"></i> 料金詳細</h6>
+                            <table class="table table-bordered">
+                                <tbody id="booking-price-breakdown"></tbody>
+                                <tfoot class="table-success">
+                                    <tr>
+                                        <th>合計金額</th>
+                                        <th class="text-end" id="booking-total-price">¥0</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 特別なご要望 -->
+                    <div id="booking-special-requests-section" class="mt-4" style="display: none;">
+                        <h6 class="text-primary"><i class="fas fa-comment"></i> 特別なご要望</h6>
+                        <div class="alert alert-light">
+                            <p class="mb-0" id="booking-special-requests"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 重要なお知らせ -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="card-title mb-0"><i class="fas fa-exclamation-triangle"></i> 重要なお知らせ</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-envelope"></i> 確認メールについて</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> 予約確認メールをお送りしました</li>
+                                <li><i class="fas fa-check text-success"></i> メールが届かない場合は迷惑メールフォルダをご確認ください</li>
+                                <li><i class="fas fa-check text-success"></i> 24時間以内にメールが届かない場合はお問い合わせください</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-credit-card"></i> お支払いについて</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-info text-primary"></i> お支払いは現地決済となります</li>
+                                <li><i class="fas fa-info text-primary"></i> キャンセルポリシーは各施設・航空会社の規定に従います</li>
+                                <li><i class="fas fa-info text-primary"></i> 価格は税込み表示です</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="text-center mb-5">
+                <div class="d-grid gap-2 d-md-block">
+                    <button class="btn btn-outline-primary me-2" onclick="window.print()">
+                        <i class="fas fa-print"></i> 予約内容を印刷
+                    </button>
+                    <a href="{% url 'index' %}" class="btn btn-primary me-2">
+                        <i class="fas fa-home"></i> トップページへ
+                    </a>
+                    <a href="{% url 'flight_search' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-search"></i> 新しい検索をする
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadBookingDetails();
+});
+
+function loadBookingDetails() {
+    // sessionStorageから予約結果を取得
+    const bookingResultData = sessionStorage.getItem('bookingResult');
+    
+    if (!bookingResultData) {
+        // 予約データがない場合はトップページに戻る
+        alert('予約データが見つかりません。');
+        window.location.href = '{% url "index" %}';
+        return;
+    }
+    
+    try {
+        const bookingResult = JSON.parse(bookingResultData);
+        const booking = bookingResult.booking;
+        
+        // 予約番号
+        document.getElementById('booking-number').textContent = `予約番号: ${booking.id}`;
+        
+        // 予約者情報
+        document.getElementById('booking-name').textContent = booking.customer_name;
+        document.getElementById('booking-email').textContent = booking.customer_email;
+        document.getElementById('booking-phone').textContent = booking.customer_phone;
+        document.getElementById('booking-guests').textContent = `${booking.num_of_people}名`;
+        
+        // 予約日時情報
+        document.getElementById('booking-created').textContent = formatDateTime(booking.created_at);
+        document.getElementById('booking-checkin').textContent = formatDate(booking.from_date);
+        document.getElementById('booking-checkout').textContent = formatDate(booking.to_date);
+        
+        // 宿泊日数を計算
+        const fromDate = new Date(booking.from_date);
+        const toDate = new Date(booking.to_date);
+        const nights = Math.max(1, Math.ceil((toDate - fromDate) / (1000 * 60 * 60 * 24)));
+        document.getElementById('booking-nights').textContent = `${nights}泊`;
+        
+        // 宿泊施設情報
+        if (booking.accommodations && booking.accommodations.length > 0) {
+            const accommodation = booking.accommodations[0];
+            document.getElementById('booking-accommodation-name').textContent = accommodation.name;
+            document.getElementById('booking-accommodation-location').textContent = accommodation.location || '所在地情報なし';
+            document.getElementById('booking-accommodation-details').textContent = `${nights}泊 × ${booking.num_of_people}名`;
+            document.getElementById('booking-accommodation-price').textContent = `¥${(accommodation.price * nights * booking.num_of_people).toLocaleString()}`;
+            document.getElementById('booking-accommodation-section').style.display = 'block';
+        }
+        
+        // 航空券情報
+        if (booking.flights && booking.flights.length > 0) {
+            const flight = booking.flights[0];
+            document.getElementById('booking-flight-airline').textContent = flight.airline;
+            document.getElementById('booking-flight-route').textContent = `${flight.departure} → ${flight.destination}`;
+            document.getElementById('booking-flight-schedule').textContent = `出発: ${flight.departure_time}`;
+            document.getElementById('booking-flight-price').textContent = `¥${(flight.price * booking.num_of_people).toLocaleString()}`;
+            document.getElementById('booking-flight-section').style.display = 'block';
+        }
+        
+        // 料金詳細
+        updatePriceBreakdown(booking, nights);
+        
+        // 特別なご要望
+        if (booking.special_requests && booking.special_requests.trim()) {
+            document.getElementById('booking-special-requests').textContent = booking.special_requests;
+            document.getElementById('booking-special-requests-section').style.display = 'block';
+        }
+        
+        // sessionStorageをクリア（一度表示したら削除）
+        sessionStorage.removeItem('bookingResult');
+        
+    } catch (error) {
+        console.error('予約データの解析エラー:', error);
+        alert('予約データの読み込みに失敗しました。');
+        window.location.href = '{% url "index" %}';
+    }
+}
+
+function updatePriceBreakdown(booking, nights) {
+    let breakdown = '';
+    let total = 0;
+    
+    // 宿泊施設料金
+    if (booking.accommodations && booking.accommodations.length > 0) {
+        const accommodation = booking.accommodations[0];
+        const accommodationTotal = accommodation.price * nights * booking.num_of_people;
+        total += accommodationTotal;
+        breakdown += `<tr><td>宿泊施設 (${nights}泊 × ${booking.num_of_people}名)</td><td class="text-end">¥${accommodationTotal.toLocaleString()}</td></tr>`;
+    }
+    
+    // 航空券料金
+    if (booking.flights && booking.flights.length > 0) {
+        const flight = booking.flights[0];
+        const flightTotal = flight.price * booking.num_of_people;
+        total += flightTotal;
+        breakdown += `<tr><td>航空券 (${booking.num_of_people}名分)</td><td class="text-end">¥${flightTotal.toLocaleString()}</td></tr>`;
+    }
+    
+    document.getElementById('booking-price-breakdown').innerHTML = breakdown;
+    document.getElementById('booking-total-price').textContent = `¥${total.toLocaleString()}`;
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    const weekday = weekdays[date.getDay()];
+    return `${year}年${month}月${day}日 (${weekday})`;
+}
+
+function formatDateTime(dateTimeString) {
+    const date = new Date(dateTimeString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}年${month}月${day}日 ${hours}:${minutes}`;
+}
+</script>
+
+<style>
+@media print {
+    .btn, .card-header, nav, footer {
+        display: none !important;
+    }
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+}
+</style>
+{% endblock %}

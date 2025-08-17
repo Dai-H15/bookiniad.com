@@ -3,90 +3,90 @@
     "model": "main.air",
     "pk": 1,
     "fields": {
-      "name": "JAL",
-      "flight_number": "JL101",
+      "name": "エビフライ航空 エコノミー",
+      "flight_number": "SF101",
       "flight_type": "domestic",
       "place_from": "東京",
       "place_to": "大阪",
-      "departure_time": "2025-08-17T08:00:00Z",
-      "arrival_time": "2025-08-17T09:15:00Z",
-      "fee": 25000,
-      "available_seats": 150
+      "departure_time": "2025-08-17T06:00:00Z",
+      "arrival_time": "2025-08-17T07:15:00Z",
+      "fee": 18000,
+      "available_seats": 8
     }
   },
   {
     "model": "main.air",
     "pk": 2,
     "fields": {
-      "name": "ANA",
-      "flight_number": "NH205",
+      "name": "エビフライ航空 ビジネス",
+      "flight_number": "SF101",
       "flight_type": "domestic",
       "place_from": "東京",
-      "place_to": "沖縄",
-      "departure_time": "2025-08-18T10:30:00Z",
-      "arrival_time": "2025-08-18T13:45:00Z",
-      "fee": 45000,
-      "available_seats": 180
+      "place_to": "大阪",
+      "departure_time": "2025-08-17T06:00:00Z",
+      "arrival_time": "2025-08-17T07:15:00Z",
+      "fee": 35000,
+      "available_seats": 2
     }
   },
   {
     "model": "main.air",
     "pk": 3,
     "fields": {
-      "name": "スカイマーク",
-      "flight_number": "BC301",
+      "name": "ANATA エコノミー",
+      "flight_number": "NH103",
       "flight_type": "domestic",
       "place_from": "東京",
-      "place_to": "札幌",
-      "departure_time": "2025-08-19T07:15:00Z",
-      "arrival_time": "2025-08-19T08:55:00Z",
-      "fee": 30000,
-      "available_seats": 120
+      "place_to": "大阪",
+      "departure_time": "2025-08-17T08:30:00Z",
+      "arrival_time": "2025-08-17T09:45:00Z",
+      "fee": 19500,
+      "available_seats": 12
     }
   },
   {
     "model": "main.air",
     "pk": 4,
     "fields": {
-      "name": "JAL",
-      "flight_number": "JL401",
+      "name": "ANATA ビジネス",
+      "flight_number": "NH103",
       "flight_type": "domestic",
       "place_from": "東京",
-      "place_to": "福岡",
-      "departure_time": "2025-08-20T14:20:00Z",
-      "arrival_time": "2025-08-20T16:30:00Z",
-      "fee": 35000,
-      "available_seats": 160
+      "place_to": "大阪",
+      "departure_time": "2025-08-17T08:30:00Z",
+      "arrival_time": "2025-08-17T09:45:00Z",
+      "fee": 37000,
+      "available_seats": 3
     }
   },
   {
     "model": "main.air",
     "pk": 5,
     "fields": {
-      "name": "ANA",
-      "flight_number": "NH501",
+      "name": "ピンチ航空",
+      "flight_number": "MM105",
       "flight_type": "domestic",
-      "place_from": "大阪",
-      "place_to": "東京",
-      "departure_time": "2025-08-21T18:00:00Z",
-      "arrival_time": "2025-08-21T19:15:00Z",
-      "fee": 25000,
-      "available_seats": 140
+      "place_from": "東京",
+      "place_to": "大阪",
+      "departure_time": "2025-08-17T11:15:00Z",
+      "arrival_time": "2025-08-17T12:30:00Z",
+      "fee": 8900,
+      "available_seats": 5
     }
   },
   {
     "model": "main.air",
     "pk": 6,
     "fields": {
-      "name": "ANA",
-      "flight_number": "NH601",
+      "name": "ジェットスカイ",
+      "flight_number": "GK107",
       "flight_type": "domestic",
-      "place_from": "沖縄",
-      "place_to": "東京",
-      "departure_time": "2025-08-22T16:30:00Z",
-      "arrival_time": "2025-08-22T19:15:00Z",
-      "fee": 45000,
-      "available_seats": 170
+      "place_from": "東京",
+      "place_to": "大阪",
+      "departure_time": "2025-08-17T15:20:00Z",
+      "arrival_time": "2025-08-17T16:35:00Z",
+      "fee": 9800,
+      "available_seats": 7
     }
   },
   {
@@ -94,59 +94,1109 @@
     "pk": 7,
     "fields": {
       "name": "スカイマーク",
-      "flight_number": "BC701",
+      "flight_number": "BC109",
       "flight_type": "domestic",
-      "place_from": "札幌",
-      "place_to": "東京",
-      "departure_time": "2025-08-23T20:10:00Z",
-      "arrival_time": "2025-08-23T21:50:00Z",
-      "fee": 30000,
-      "available_seats": 110
+      "place_from": "東京",
+      "place_to": "大阪",
+      "departure_time": "2025-08-17T18:45:00Z",
+      "arrival_time": "2025-08-17T20:00:00Z",
+      "fee": 12500,
+      "available_seats": 6
     }
   },
   {
     "model": "main.air",
     "pk": 8,
     "fields": {
-      "name": "JAL",
-      "flight_number": "JL801",
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL201",
       "flight_type": "domestic",
-      "place_from": "福岡",
-      "place_to": "東京",
-      "departure_time": "2025-08-24T19:45:00Z",
-      "arrival_time": "2025-08-24T21:30:00Z",
-      "fee": 35000,
-      "available_seats": 155
+      "place_from": "東京",
+      "place_to": "沖縄",
+      "departure_time": "2025-08-17T07:30:00Z",
+      "arrival_time": "2025-08-17T10:45:00Z",
+      "fee": 28000,
+      "available_seats": 15
     }
   },
   {
     "model": "main.air",
     "pk": 9,
     "fields": {
-      "name": "JAL",
-      "flight_number": "JL902",
-      "flight_type": "international",
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL201",
+      "flight_type": "domestic",
       "place_from": "東京",
-      "place_to": "ソウル",
-      "departure_time": "2025-08-25T11:00:00Z",
-      "arrival_time": "2025-08-25T13:30:00Z",
-      "fee": 65000,
-      "available_seats": 200
+      "place_to": "沖縄",
+      "departure_time": "2025-08-17T07:30:00Z",
+      "arrival_time": "2025-08-17T10:45:00Z",
+      "fee": 55000,
+      "available_seats": 4
     }
   },
   {
     "model": "main.air",
     "pk": 10,
     "fields": {
-      "name": "ANA",
-      "flight_number": "NH903",
+      "name": "ANATA エコノミー",
+      "flight_number": "NH203",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "沖縄",
+      "departure_time": "2025-08-17T13:15:00Z",
+      "arrival_time": "2025-08-17T16:30:00Z",
+      "fee": 30000,
+      "available_seats": 18
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 11,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH203",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "沖縄",
+      "departure_time": "2025-08-17T13:15:00Z",
+      "arrival_time": "2025-08-17T16:30:00Z",
+      "fee": 58000,
+      "available_seats": 2
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 12,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM205",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "沖縄",
+      "departure_time": "2025-08-17T16:40:00Z",
+      "arrival_time": "2025-08-17T19:55:00Z",
+      "fee": 15800,
+      "available_seats": 9
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 13,
+    "fields": {
+      "name": "ジェットスカイ",
+      "flight_number": "GK207",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "沖縄",
+      "departure_time": "2025-08-17T20:10:00Z",
+      "arrival_time": "2025-08-17T23:25:00Z",
+      "fee": 17200,
+      "available_seats": 11
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 14,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL301",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "札幌",
+      "departure_time": "2025-08-17T08:15:00Z",
+      "arrival_time": "2025-08-17T09:55:00Z",
+      "fee": 22000,
+      "available_seats": 14
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 15,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL301",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "札幌",
+      "departure_time": "2025-08-17T08:15:00Z",
+      "arrival_time": "2025-08-17T09:55:00Z",
+      "fee": 42000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 16,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH303",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "札幌",
+      "departure_time": "2025-08-17T12:45:00Z",
+      "arrival_time": "2025-08-17T14:25:00Z",
+      "fee": 24000,
+      "available_seats": 16
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 17,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH303",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "札幌",
+      "departure_time": "2025-08-17T12:45:00Z",
+      "arrival_time": "2025-08-17T14:25:00Z",
+      "fee": 45000,
+      "available_seats": 2
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 18,
+    "fields": {
+      "name": "コスモドゥ",
+      "flight_number": "HD305",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "札幌",
+      "departure_time": "2025-08-17T17:30:00Z",
+      "arrival_time": "2025-08-17T19:10:00Z",
+      "fee": 18500,
+      "available_seats": 8
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 19,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM307",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "札幌",
+      "departure_time": "2025-08-17T19:55:00Z",
+      "arrival_time": "2025-08-17T21:35:00Z",
+      "fee": 16800,
+      "available_seats": 6
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 20,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL401",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "福岡",
+      "departure_time": "2025-08-17T09:20:00Z",
+      "arrival_time": "2025-08-17T11:30:00Z",
+      "fee": 25000,
+      "available_seats": 13
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 21,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL401",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "福岡",
+      "departure_time": "2025-08-17T09:20:00Z",
+      "arrival_time": "2025-08-17T11:30:00Z",
+      "fee": 48000,
+      "available_seats": 4
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 22,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH403",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "福岡",
+      "departure_time": "2025-08-17T14:10:00Z",
+      "arrival_time": "2025-08-17T16:20:00Z",
+      "fee": 27000,
+      "available_seats": 17
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 23,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH403",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "福岡",
+      "departure_time": "2025-08-17T14:10:00Z",
+      "arrival_time": "2025-08-17T16:20:00Z",
+      "fee": 51000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 24,
+    "fields": {
+      "name": "ジェットスカイ",
+      "flight_number": "GK405",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "福岡",
+      "departure_time": "2025-08-17T18:35:00Z",
+      "arrival_time": "2025-08-17T20:45:00Z",
+      "fee": 13500,
+      "available_seats": 10
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 25,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM407",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "福岡",
+      "departure_time": "2025-08-17T21:00:00Z",
+      "arrival_time": "2025-08-17T23:10:00Z",
+      "fee": 12800,
+      "available_seats": 7
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 26,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL501",
+      "flight_type": "domestic",
+      "place_from": "大阪",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T07:45:00Z",
+      "arrival_time": "2025-08-17T09:00:00Z",
+      "fee": 18500,
+      "available_seats": 9
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 27,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL501",
+      "flight_type": "domestic",
+      "place_from": "大阪",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T07:45:00Z",
+      "arrival_time": "2025-08-17T09:00:00Z",
+      "fee": 36000,
+      "available_seats": 2
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 28,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH503",
+      "flight_type": "domestic",
+      "place_from": "大阪",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T12:15:00Z",
+      "arrival_time": "2025-08-17T13:30:00Z",
+      "fee": 19800,
+      "available_seats": 14
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 29,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH503",
+      "flight_type": "domestic",
+      "place_from": "大阪",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T12:15:00Z",
+      "arrival_time": "2025-08-17T13:30:00Z",
+      "fee": 38000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 30,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM505",
+      "flight_type": "domestic",
+      "place_from": "大阪",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T16:50:00Z",
+      "arrival_time": "2025-08-17T18:05:00Z",
+      "fee": 9200,
+      "available_seats": 6
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 31,
+    "fields": {
+      "name": "ジェットスカイ",
+      "flight_number": "GK507",
+      "flight_type": "domestic",
+      "place_from": "大阪",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T19:25:00Z",
+      "arrival_time": "2025-08-17T20:40:00Z",
+      "fee": 10100,
+      "available_seats": 8
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 32,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL601",
+      "flight_type": "domestic",
+      "place_from": "沖縄",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T08:30:00Z",
+      "arrival_time": "2025-08-17T11:15:00Z",
+      "fee": 29000,
+      "available_seats": 16
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 33,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL601",
+      "flight_type": "domestic",
+      "place_from": "沖縄",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T08:30:00Z",
+      "arrival_time": "2025-08-17T11:15:00Z",
+      "fee": 56000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 34,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH603",
+      "flight_type": "domestic",
+      "place_from": "沖縄",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T14:40:00Z",
+      "arrival_time": "2025-08-17T17:25:00Z",
+      "fee": 31000,
+      "available_seats": 19
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 35,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH603",
+      "flight_type": "domestic",
+      "place_from": "沖縄",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T14:40:00Z",
+      "arrival_time": "2025-08-17T17:25:00Z",
+      "fee": 59000,
+      "available_seats": 2
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 36,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM605",
+      "flight_type": "domestic",
+      "place_from": "沖縄",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T18:15:00Z",
+      "arrival_time": "2025-08-17T21:00:00Z",
+      "fee": 16500,
+      "available_seats": 12
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 37,
+    "fields": {
+      "name": "ジェットスカイ",
+      "flight_number": "GK607",
+      "flight_type": "domestic",
+      "place_from": "沖縄",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T20:45:00Z",
+      "arrival_time": "2025-08-17T23:30:00Z",
+      "fee": 17800,
+      "available_seats": 8
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 38,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL701",
+      "flight_type": "domestic",
+      "place_from": "札幌",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T09:10:00Z",
+      "arrival_time": "2025-08-17T10:50:00Z",
+      "fee": 23000,
+      "available_seats": 15
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 39,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL701",
+      "flight_type": "domestic",
+      "place_from": "札幌",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T09:10:00Z",
+      "arrival_time": "2025-08-17T10:50:00Z",
+      "fee": 43000,
+      "available_seats": 4
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 40,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH703",
+      "flight_type": "domestic",
+      "place_from": "札幌",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T15:35:00Z",
+      "arrival_time": "2025-08-17T17:15:00Z",
+      "fee": 25000,
+      "available_seats": 18
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 41,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH703",
+      "flight_type": "domestic",
+      "place_from": "札幌",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T15:35:00Z",
+      "arrival_time": "2025-08-17T17:15:00Z",
+      "fee": 46000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 42,
+    "fields": {
+      "name": "コスモドゥ",
+      "flight_number": "HD705",
+      "flight_type": "domestic",
+      "place_from": "札幌",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T18:20:00Z",
+      "arrival_time": "2025-08-17T20:00:00Z",
+      "fee": 19500,
+      "available_seats": 11
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 43,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM707",
+      "flight_type": "domestic",
+      "place_from": "札幌",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T20:55:00Z",
+      "arrival_time": "2025-08-17T22:35:00Z",
+      "fee": 17300,
+      "available_seats": 9
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 44,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL801",
+      "flight_type": "domestic",
+      "place_from": "福岡",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T10:25:00Z",
+      "arrival_time": "2025-08-17T12:15:00Z",
+      "fee": 26000,
+      "available_seats": 14
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 45,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL801",
+      "flight_type": "domestic",
+      "place_from": "福岡",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T10:25:00Z",
+      "arrival_time": "2025-08-17T12:15:00Z",
+      "fee": 49000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 46,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH803",
+      "flight_type": "domestic",
+      "place_from": "福岡",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T16:40:00Z",
+      "arrival_time": "2025-08-17T18:30:00Z",
+      "fee": 28000,
+      "available_seats": 17
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 47,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH803",
+      "flight_type": "domestic",
+      "place_from": "福岡",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T16:40:00Z",
+      "arrival_time": "2025-08-17T18:30:00Z",
+      "fee": 52000,
+      "available_seats": 2
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 48,
+    "fields": {
+      "name": "ジェットスカイ",
+      "flight_number": "GK805",
+      "flight_type": "domestic",
+      "place_from": "福岡",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T19:30:00Z",
+      "arrival_time": "2025-08-17T21:20:00Z",
+      "fee": 14200,
+      "available_seats": 10
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 49,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM807",
+      "flight_type": "domestic",
+      "place_from": "福岡",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T21:55:00Z",
+      "arrival_time": "2025-08-17T23:45:00Z",
+      "fee": 13600,
+      "available_seats": 7
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 50,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL151",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "名古屋",
+      "departure_time": "2025-08-17T08:00:00Z",
+      "arrival_time": "2025-08-17T09:10:00Z",
+      "fee": 15000,
+      "available_seats": 12
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 51,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL151",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "名古屋",
+      "departure_time": "2025-08-17T08:00:00Z",
+      "arrival_time": "2025-08-17T09:10:00Z",
+      "fee": 28000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 52,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH153",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "名古屋",
+      "departure_time": "2025-08-17T14:30:00Z",
+      "arrival_time": "2025-08-17T15:40:00Z",
+      "fee": 16500,
+      "available_seats": 15
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 53,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH153",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "名古屋",
+      "departure_time": "2025-08-17T14:30:00Z",
+      "arrival_time": "2025-08-17T15:40:00Z",
+      "fee": 31000,
+      "available_seats": 2
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 54,
+    "fields": {
+      "name": "ジェットスカイ",
+      "flight_number": "GK155",
+      "flight_type": "domestic",
+      "place_from": "東京",
+      "place_to": "名古屋",
+      "departure_time": "2025-08-17T18:15:00Z",
+      "arrival_time": "2025-08-17T19:25:00Z",
+      "fee": 8500,
+      "available_seats": 8
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 55,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL851",
+      "flight_type": "domestic",
+      "place_from": "名古屋",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T11:20:00Z",
+      "arrival_time": "2025-08-17T12:30:00Z",
+      "fee": 15500,
+      "available_seats": 11
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 56,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL851",
+      "flight_type": "domestic",
+      "place_from": "名古屋",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T11:20:00Z",
+      "arrival_time": "2025-08-17T12:30:00Z",
+      "fee": 29000,
+      "available_seats": 4
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 57,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH853",
+      "flight_type": "domestic",
+      "place_from": "名古屋",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T17:45:00Z",
+      "arrival_time": "2025-08-17T18:55:00Z",
+      "fee": 17000,
+      "available_seats": 13
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 58,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH853",
+      "flight_type": "domestic",
+      "place_from": "名古屋",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T17:45:00Z",
+      "arrival_time": "2025-08-17T18:55:00Z",
+      "fee": 32000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 59,
+    "fields": {
+      "name": "ジェットスカイ",
+      "flight_number": "GK855",
+      "flight_type": "domestic",
+      "place_from": "名古屋",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T20:40:00Z",
+      "arrival_time": "2025-08-17T21:50:00Z",
+      "fee": 9000,
+      "available_seats": 6
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 60,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL1001",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T09:30:00Z",
+      "arrival_time": "2025-08-17T12:00:00Z",
+      "fee": 45000,
+      "available_seats": 22
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 61,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL1001",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T09:30:00Z",
+      "arrival_time": "2025-08-17T12:00:00Z",
+      "fee": 95000,
+      "available_seats": 6
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 62,
+    "fields": {
+      "name": "JALJAL ファースト",
+      "flight_number": "JL1001",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T09:30:00Z",
+      "arrival_time": "2025-08-17T12:00:00Z",
+      "fee": 180000,
+      "available_seats": 2
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 63,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH1003",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T15:45:00Z",
+      "arrival_time": "2025-08-17T18:15:00Z",
+      "fee": 47000,
+      "available_seats": 25
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 64,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH1003",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T15:45:00Z",
+      "arrival_time": "2025-08-17T18:15:00Z",
+      "fee": 98000,
+      "available_seats": 5
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 65,
+    "fields": {
+      "name": "ANATA ファースト",
+      "flight_number": "NH1003",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T15:45:00Z",
+      "arrival_time": "2025-08-17T18:15:00Z",
+      "fee": 185000,
+      "available_seats": 1
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 66,
+    "fields": {
+      "name": "中間航空 エコノミー",
+      "flight_number": "KE1005",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T11:20:00Z",
+      "arrival_time": "2025-08-17T13:50:00Z",
+      "fee": 38000,
+      "available_seats": 18
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 67,
+    "fields": {
+      "name": "中間航空 ビジネス",
+      "flight_number": "KE1005",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T11:20:00Z",
+      "arrival_time": "2025-08-17T13:50:00Z",
+      "fee": 82000,
+      "available_seats": 4
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 68,
+    "fields": {
+      "name": "アナコンダ航空 エコノミー",
+      "flight_number": "OZ1007",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T17:30:00Z",
+      "arrival_time": "2025-08-17T20:00:00Z",
+      "fee": 36000,
+      "available_seats": 20
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 69,
+    "fields": {
+      "name": "アナコンダ航空 ビジネス",
+      "flight_number": "OZ1007",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T17:30:00Z",
+      "arrival_time": "2025-08-17T20:00:00Z",
+      "fee": 78000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 70,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM1009",
+      "flight_type": "international",
+      "place_from": "東京",
+      "place_to": "ソウル",
+      "departure_time": "2025-08-17T20:15:00Z",
+      "arrival_time": "2025-08-17T22:45:00Z",
+      "fee": 19800,
+      "available_seats": 12
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 71,
+    "fields": {
+      "name": "JALJAL エコノミー",
+      "flight_number": "JL2001",
       "flight_type": "international",
       "place_from": "ソウル",
       "place_to": "東京",
-      "departure_time": "2025-08-26T15:30:00Z",
-      "arrival_time": "2025-08-26T17:45:00Z",
-      "fee": 65000,
-      "available_seats": 190
+      "departure_time": "2025-08-17T13:40:00Z",
+      "arrival_time": "2025-08-17T15:50:00Z",
+      "fee": 46000,
+      "available_seats": 20
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 72,
+    "fields": {
+      "name": "JALJAL ビジネス",
+      "flight_number": "JL2001",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T13:40:00Z",
+      "arrival_time": "2025-08-17T15:50:00Z",
+      "fee": 96000,
+      "available_seats": 5
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 73,
+    "fields": {
+      "name": "JALJAL ファースト",
+      "flight_number": "JL2001",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T13:40:00Z",
+      "arrival_time": "2025-08-17T15:50:00Z",
+      "fee": 182000,
+      "available_seats": 1
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 74,
+    "fields": {
+      "name": "ANATA エコノミー",
+      "flight_number": "NH2003",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T19:25:00Z",
+      "arrival_time": "2025-08-17T21:35:00Z",
+      "fee": 48000,
+      "available_seats": 23
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 75,
+    "fields": {
+      "name": "ANATA ビジネス",
+      "flight_number": "NH2003",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T19:25:00Z",
+      "arrival_time": "2025-08-17T21:35:00Z",
+      "fee": 99000,
+      "available_seats": 4
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 76,
+    "fields": {
+      "name": "中間航空 エコノミー",
+      "flight_number": "KE2005",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T16:10:00Z",
+      "arrival_time": "2025-08-17T18:20:00Z",
+      "fee": 39000,
+      "available_seats": 17
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 77,
+    "fields": {
+      "name": "中間航空 ビジネス",
+      "flight_number": "KE2005",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T16:10:00Z",
+      "arrival_time": "2025-08-17T18:20:00Z",
+      "fee": 83000,
+      "available_seats": 3
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 78,
+    "fields": {
+      "name": "アナコンダ航空 エコノミー",
+      "flight_number": "OZ2007",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T21:45:00Z",
+      "arrival_time": "2025-08-17T23:55:00Z",
+      "fee": 37000,
+      "available_seats": 19
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 79,
+    "fields": {
+      "name": "アナコンダ航空 ビジネス",
+      "flight_number": "OZ2007",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T21:45:00Z",
+      "arrival_time": "2025-08-17T23:55:00Z",
+      "fee": 79000,
+      "available_seats": 2
+    }
+  },
+  {
+    "model": "main.air",
+    "pk": 80,
+    "fields": {
+      "name": "ピンチ航空",
+      "flight_number": "MM2009",
+      "flight_type": "international",
+      "place_from": "ソウル",
+      "place_to": "東京",
+      "departure_time": "2025-08-17T10:30:00Z",
+      "arrival_time": "2025-08-17T12:40:00Z",
+      "fee": 20500,
+      "available_seats": 10
     }
   }
 ]

@@ -1,4 +1,3 @@
-from agents import Agent, Runner, RunConfig, function_tool, SQLiteSession, enable_verbose_stdout_logging, RunContextWrapper, GuardrailFunctionOutput, output_guardrail
 import os
 import sys
 import dotenv
@@ -10,14 +9,14 @@ import django
 from pydantic import BaseModel
 
 dotenv.load_dotenv()
-enable_verbose_stdout_logging()
 
 # Django設定の初期化（インポート前に実行）
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.settings')
 django.setup()
-
+from agents import Agent, Runner, RunConfig, function_tool, SQLiteSession, enable_verbose_stdout_logging, RunContextWrapper, GuardrailFunctionOutput, output_guardrail
 from main.models import Air, Accommodations, Booking
+enable_verbose_stdout_logging()
 
 
 @function_tool

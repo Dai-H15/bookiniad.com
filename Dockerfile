@@ -26,8 +26,8 @@ RUN mkdir -p staticfiles
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
 
-# サンプルデータを設定
-RUN python manage.py setup_sample_data
+# サンプルデータを設定（失敗してもビルド継続）
+RUN python manage.py setup_sample_data || true
 
 # ポート8000を公開
 EXPOSE 8000
@@ -38,4 +38,4 @@ RUN useradd --create-home --shell /bin/bash app \
 USER app
 
 # Gunicornを使用してDjangoアプリケーションを起動
-CMD ["uvicorn", "--bind", "0.0.0.0:8000", "settings.asgi:application"]
+CMD ["uvicorn", "--host", "0.0.0.0","--port", "8000", "settings.asgi:application"]

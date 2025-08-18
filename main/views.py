@@ -7,9 +7,11 @@ from django.db.models import Q
 import json
 import uuid
 import time
-from main.agents.agent import TravelAgentSystem
-from main.agents.bot import handle_rule_bot
-from main.agents.assistant import TravelChatAssistant
+import os
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
+from main.ai_agents.agent import TravelAgentSystem
+from main.ai_agents.bot import handle_rule_bot
+from main.ai_agents.assistant import TravelChatAssistant
 
 from .models import (
     Accommodations, Air, Booking, TravelPackage,
@@ -19,6 +21,11 @@ from .models import (
 
 # セッションごとのTravelChatAssistantインスタンスを管理
 session_assistants = {}
+
+# AI処理用のスレッドプール（長時間処理のバックグラウンド実行に使用）
+AGENT_WORKERS = int(os.environ.get('AGENT_WORKERS', '4'))
+_agent_executor = ThreadPoolExecutor(max_workers=AGENT_WORKERS)
+AGENT_SYNC_TIMEOUT = float(os.environ.get('AGENT_SYNC_TIMEOUT', '20'))
 
 
 # トップページ
@@ -522,42 +529,63 @@ def chat_message(request):
             content=message
         )
         
-        # システムタイプに応じて応答を生成
-        start_time = time.time()
-        
-        if session.session_type == 'ai_agent':
-            response = handle_ai_agent(message, session)
-        elif session.session_type == 'ai_assistant':
-            response = handle_ai_assistant(message, session)
-        elif session.session_type == 'rule_bot':
-            response = handle_rule_bot(message, session)
-        else:
-            response = {'content': 'システムエラーが発生しました。', 'intent': 'error'}
-        
-        processing_time = time.time() - start_time
-        
-        # システム応答を記録
-        ChatMessage.objects.create(
-            session=session,
-            message_type=session.session_type,
-            content=response['content'],
-            reasoning_process=response.get('reasoning', {})
-        )
-        
-        # パフォーマンス記録
-        SystemResponse.objects.create(
-            session=session,
-            intent_detected=response.get('intent', ''),
-            confidence_score=response.get('confidence', None),
-            processing_time=processing_time,
-            response_generated=response['content']
-        )
-        
-        return JsonResponse({
-            'response': response['content'],
-            'intent': response.get('intent', ''),
-            'processing_time': processing_time
-        })
+        def _generate_and_persist():
+            start_time = time.time()
+            try:
+                if session.session_type == 'ai_agent':
+                    response = handle_ai_agent(message, session)
+                elif session.session_type == 'ai_assistant':
+                    response = handle_ai_assistant(message, session)
+                elif session.session_type == 'rule_bot':
+                    response = handle_rule_bot(message, session)
+                else:
+                    response = {'content': 'システムエラーが発生しました。', 'intent': 'error', 'confidence': 0.0}
+            except Exception as e:
+                response = {
+                    'content': f'内部エラーが発生しました: {str(e)}',
+                    'intent': 'error',
+                    'confidence': 0.0,
+                    'reasoning': {'error': str(e)}
+                }
+            processing_time = time.time() - start_time
+            try:
+                ChatMessage.objects.create(
+                    session=session,
+                    message_type=session.session_type,
+                    content=response['content'],
+                    reasoning_process=response.get('reasoning', {})
+                )
+                SystemResponse.objects.create(
+                    session=session,
+                    intent_detected=response.get('intent', ''),
+                    confidence_score=response.get('confidence', None),
+                    processing_time=processing_time,
+                    response_generated=response['content']
+                )
+            except Exception:
+                # 永続化の失敗はレスポンス生成を妨げない
+                pass
+            # 呼び出し側へ返すデータ
+            return {
+                'response': response['content'],
+                'intent': response.get('intent', ''),
+                'processing_time': processing_time,
+                'confidence': response.get('confidence')
+            }
+
+        # バックグラウンドで実行しつつ、一定時間でタイムアウトしたら即時応答
+        future = _agent_executor.submit(_generate_and_persist)
+        try:
+            result = future.result(timeout=AGENT_SYNC_TIMEOUT)
+            return JsonResponse(result)
+        except FuturesTimeoutError:
+            # タイムアウト時はバックグラウンドに継続させ、即時のプレースホルダーを返す
+            return JsonResponse({
+                'response': 'ただいま回答を作成中です。数十秒後に自動で更新されます。',
+                'intent': 'processing',
+                'processing_time': AGENT_SYNC_TIMEOUT,
+                'processing': True
+            })
         
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

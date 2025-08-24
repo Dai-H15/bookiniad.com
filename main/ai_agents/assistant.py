@@ -477,7 +477,7 @@ class TravelChatAssistant:
         messages = [{"role": "system", "content": self.system_prompt}]
         
         # 会話履歴を追加（最新10件まで）
-        recent_history = self.conversation_history[-10:] if len(self.conversation_history) > 10 else self.conversation_history
+        recent_history = self.conversation_history[-15:] if len(self.conversation_history) > 15 else self.conversation_history
         messages.extend(recent_history)
         
         # 新しいユーザーメッセージを追加

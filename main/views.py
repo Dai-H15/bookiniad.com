@@ -243,6 +243,7 @@ def check_accommodation_availability(accommodation, checkin_date, checkout_date,
 # 航空券検索ページ
 def flight_search(request):
     from datetime import datetime
+    from django.utils import timezone
     
     departure = request.GET.get('departure', '') or request.GET.get('place_from', '')
     destination = request.GET.get('destination', '') or request.GET.get('place_to', '')
@@ -258,8 +259,14 @@ def flight_search(request):
     # 往復検索かどうかを判定
     is_round_trip = bool(return_date)
     
-    # 往路の検索
-    outbound_flights = Air.objects.filter(available_seats__gt=0)
+    # 現在の日時を取得
+    now = timezone.now()
+    
+    # 往路の検索（現在時刻以降の航空券のみ）
+    outbound_flights = Air.objects.filter(
+        available_seats__gt=0,
+        departure_time__gt=now
+    )
     
     # 往路の検索フィルタを適用
     if departure:
@@ -272,7 +279,10 @@ def flight_search(request):
     # 復路の検索
     return_flights = []
     if is_round_trip:
-        return_flights = Air.objects.filter(available_seats__gt=0)
+        return_flights = Air.objects.filter(
+            available_seats__gt=0,
+            departure_time__gt=now
+        )
         # 復路は出発地と目的地が逆
         if departure:
             return_flights = return_flights.filter(place_to__icontains=departure)

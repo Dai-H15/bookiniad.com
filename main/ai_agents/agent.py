@@ -24,9 +24,16 @@ enable_verbose_stdout_logging()
 def search_air(place_from: str, place_to: str, departure_date: str = "") -> str:
     """航空券をデータベースから検索（出発日未定でも対応）"""
     try:
+        from django.utils import timezone
+        
+        # 現在の日時を取得
+        now = timezone.now()
+        
+        # 基本的な検索クエリ（現在時刻以降の航空券のみ）
         query = Air.objects.filter(
             place_from__icontains=place_from,
-            place_to__icontains=place_to
+            place_to__icontains=place_to,
+            departure_time__gt=now  # 現在時刻以降の航空券のみ
         )
         
         # 出発日が指定されている場合
@@ -35,16 +42,17 @@ def search_air(place_from: str, place_to: str, departure_date: str = "") -> str:
                 search_date = datetime.strptime(departure_date, '%Y-%m-%d').date()
                 query = query.filter(departure_time__date=search_date)
             except ValueError:
-                # 日付形式が正しくない場合はすべての便を表示
+                # 日付形式が正しくない場合はすべての便を表示（ただし現在時刻以降のみ）
                 pass
         
         # 日付順でソート（最新の便から）
         flights = query.order_by('departure_time')[:10]  # 最大10件
         
         if not flights:
-            # 便が見つからない場合、条件を緩和して検索
+            # 便が見つからない場合、条件を緩和して検索（ただし現在時刻以降のみ）
             fallback_query = Air.objects.filter(
-                Q(place_from__icontains=place_from) | Q(place_to__icontains=place_to)
+                Q(place_from__icontains=place_from) | Q(place_to__icontains=place_to),
+                departure_time__gt=now  # 現在時刻以降の航空券のみ
             )
             flights = fallback_query.order_by('departure_time')[:5]
             
@@ -1118,3 +1126,4 @@ if __name__ == "__main__":
     choice = input().lower()
     if choice in ['y', 'yes', 'はい']:
         main()
+

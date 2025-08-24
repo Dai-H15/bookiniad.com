@@ -418,5 +418,61 @@
       "image_url": "https://example.com/miyajima-view-hotel.jpg",
       "total_rooms": 12
     }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 31,
+    "fields": {
+      "name": "那覇国際通りホステル",
+      "rank": 2,
+      "location": "沖縄",
+      "description": "国際通りに位置するバックパッカー向けのカジュアルなホステル。沖縄観光の拠点として最適。",
+      "amenities": ["WiFi", "朝食", "共用キッチン", "コインランドリー", "観光案内"],
+      "price_per_night": 5500,
+      "image_url": "https://example.com/naha-kokusai-hostel.jpg",
+      "total_rooms": 8
+    }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 32,
+    "fields": {
+      "name": "古宇利島オーシャンビュー",
+      "rank": 3,
+      "location": "沖縄",
+      "description": "古宇利大橋と美しい海を望む中規模リゾート。静かで落ち着いた環境。",
+      "amenities": ["WiFi", "プール", "ビーチアクセス", "BBQ設備", "レンタサイクル"],
+      "price_per_night": 13500,
+      "image_url": "https://example.com/kouri-ocean-view.jpg",
+      "total_rooms": 10
+    }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 33,
+    "fields": {
+      "name": "万座毛サンセットヴィラ",
+      "rank": 4,
+      "location": "沖縄",
+      "description": "万座毛の絶景を望むプライベートヴィラ風ホテル。夕日の美しさは格別。",
+      "amenities": ["WiFi", "プライベートプール", "ビーチアクセス", "BBQ設備", "マッサージ"],
+      "price_per_night": 28500,
+      "image_url": "https://example.com/manzamo-sunset-villa.jpg",
+      "total_rooms": 6
+    }
+  },
+  {
+    "model": "main.accommodations",
+    "pk": 34,
+    "fields": {
+      "name": "竹富島伝統古民家宿",
+      "rank": 5,
+      "location": "沖縄",
+      "description": "八重山諸島の竹富島にある赤瓦屋根の伝統古民家を改装した高級宿。沖縄の原風景を満喫。",
+      "amenities": ["WiFi", "伝統料理", "島内観光", "水牛車体験", "星空観察"],
+      "price_per_night": 45000,
+      "image_url": "https://example.com/taketomi-traditional-house.jpg",
+      "total_rooms": 4
+    }
   }
 ]

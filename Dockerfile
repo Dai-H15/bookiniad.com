@@ -28,6 +28,7 @@ RUN python manage.py migrate
 
 # サンプルデータを設定（失敗してもビルド継続）
 RUN python manage.py setup_sample_data || true
+RUN python manage.py create_admin || true
 
 # ポート8000を公開
 EXPOSE 8000
